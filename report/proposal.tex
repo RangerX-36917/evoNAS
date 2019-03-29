@@ -20,7 +20,7 @@
     
     	% MAKE SURE YOU TAKE OUT THE SQUARE BRACKETS
     
-		\LARGE{\textbf{Bloodline Preserving Evolutionary Neural Architecture Search for Image Classification}} \\
+		\LARGE{\textbf{Bloodline-preserving Evolutionary Neural Architecture Search for Image Classification}} \\
         \vspace{1em}
         \Large{Project Proposal} \\
         \vspace{1em}
@@ -110,6 +110,8 @@
 
   \section{System Design}
 
+  For now, we follow the design of a cell based evolutionary NAS algorithm described in\cite{DBLP:journals/corr/abs-1802-01548} except that we propose a population update policy to preserve good $bloodlines$. We will further examine initilization, crossover and mutation strategies to optimize our algorithm. We will also compare different performance estimation approaches to cut computation demand.
+
   \begin{algorithm}[htb]  
     \caption{ Aging Bloodlines Evolution:}
     \begin{algorithmic}[1]  
@@ -153,13 +155,12 @@
 
 \end{normalsize}
 
-The $population$ size is $N$ and we do $G$ times generations. $entireGen$ stores all network models that we generated. 
+The $population$ size is $N$ and the algorithm evolve $G$ generations in total. $entireGen$ stores all network models that we generated. 
      
-In $networkInit()$, the initial network model will be generated. Then its $age $ will be set to 1 and $lifetime$ will be set to default value. 
+In $networkInit()$, the initial network model is generated. Then its $age $ is set to 1 and $lifetime$ is set to the default value. 
 
-$P$ and $t$ are hyper-parameter that relate to the ultimate lifetime of individuals.
+$P$ and $t$ are hyper-parameters controlling the actual lifespan of an individual.
 
-We will have a further discussion on how to initialize and do mutate on networks. We may follow \cite{DBLP:journals/corr/abs-1802-01548} to implement a cell based NAS at first. 
 
 
 \bibliographystyle{ieeetr}
