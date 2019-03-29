@@ -1,6 +1,19 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage[margin=0.75in]{geometry}
+\usepackage{booktabs}
+\usepackage{listing}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{array}
+\usepackage{url}
+\usepackage{cite}
+\usepackage{complexity}
+\usepackage{algpseudocode}
+ \usepackage{graphicx}
+ \usepackage{enumerate}
+ \usepackage{subcaption}
+ \usepackage[shortlabels]{enumitem}
 
 \begin{document}
 	\begin{center}
@@ -47,9 +60,8 @@
     The objective of this project is to propose a novel evolutionary approach for neural architecture search targeted at image classification. The specific objectives are as follows:
     \begin{enumerate}
       \item Investigate existing evolutionary neural architecture search algorithms.
-      \item Propose effective genetic operators for evolution of neural networks. This includes \emph{crossover}, \emph{mutation} and \emph{inheritance}.
       \item Find an efficient estimate approximation of neural networks to cut computational cost.
-      \item Identify an effective population selection strategy.
+      \item Propose an effective population selection strategy.
       \item Compare performance against hand-crafted networks as well as other NAS algorithms.
     \end{enumerate}
 
@@ -98,8 +110,48 @@
     \noindent You can create bullets by doing:
 
   \section{System Design}
+
+  \begin{algorithm}[htb]  
+    \caption{ Aging Bloodlines Evolution:}
+    \begin{algorithmic}[1]  
   
-  \section{Timeline}
+    \State $population\gets \phi$
+    \State $entireGen\gets \phi$
+    \State $generation\gets 0$
+    
+    \While{$population$ size$<N$}
+    \State $newNetwork\gets networkInit()$
+    \State $trainNetwork(newNewwork)$
+    \State add $newNetwork$ to $popution$ and $entireGen$
+    \EndWhile
+    
+  
+    
+    \While {$genetation < G$}
+      \State $parent\gets$ select a parent from population using tournament selection 
+      \State $child \gets mutate(parent)$
+      \State $trainNetwork(child)$
+      \State add $child$ to $popution$ and $entireGen$
+      \If {accuracy of $child$ is better than $p\%$ individuals in population}
+        \State extend the $lifetime$ of $parent$ by $t$
+      \EndIf
+      
+      \ForAll {$individual$ in $population$}
+        \State update the $age$ of $individual$
+        \State remove current $individual$ if its age reaches its $lifetime$
+      \EndFor
+      
+      
+    \EndWhile
+    
+    
+    \\  
+    \Return the network model with highest accuracy in $entireGen$
+ 
+  \end{algorithmic}  
+  \end{algorithm}  
+
+
 \end{normalsize}
      
 
