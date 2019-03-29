@@ -20,7 +20,7 @@
     
     	% MAKE SURE YOU TAKE OUT THE SQUARE BRACKETS
     
-		\LARGE{\textbf{Evolutionary Neural Architecture Search for Image Classification}} \\
+		\LARGE{\textbf{Bloodline Preserving Evolutionary Neural Architecture Search for Image Classification}} \\
         \vspace{1em}
         \Large{Project Proposal} \\
         \vspace{1em}
@@ -106,8 +106,7 @@
     Combining the advantage of the above works, we propose a population update police based on $age$ and $bloodline$. An individual is dropped from the total population if its $age$ exceeds a predefined $lifetime$. However, we prolong its life if its offspring performs well (e.g. within top $P\%$ in ranking). In this way, we can preserve a good $bloodline$ in the population.
 
     To test the effectiveness of our algorithm, we will experiment on image classification datasets including CIFAR-10, CIFAR-100 and will possibly extend to IMAGENET.
-      
-    \noindent You can create bullets by doing:
+
 
   \section{System Design}
 
@@ -121,7 +120,7 @@
     
     \While{$population$ size$<N$}
     \State $newNetwork\gets networkInit()$
-    \State $trainNetwork(newNewwork)$
+    \State $trainNetwork(newNetwork)$
     \State add $newNetwork$ to $popution$ and $entireGen$
     \EndWhile
     
@@ -132,7 +131,7 @@
       \State $child \gets mutate(parent)$
       \State $trainNetwork(child)$
       \State add $child$ to $popution$ and $entireGen$
-      \If {accuracy of $child$ is better than $p\%$ individuals in population}
+      \If {accuracy of $child$ is better than $P\%$ individuals in population}
         \State extend the $lifetime$ of $parent$ by $t$
       \EndIf
       
@@ -153,7 +152,15 @@
 
 
 \end{normalsize}
+
+The $population$ size is $N$ and we do $G$ times generations. $entireGen$ stores all network models that we generated. 
      
+In $networkInit()$, the initial network model will be generated. Then its $age $ will be set to 1 and $lifetime$ will be set to default value. 
+
+$P$ and $t$ are hyper-parameter that relate to the ultimate lifetime of individuals.
+
+We will have a further discussion on how to initialize and do mutate on networks. We may follow \cite{DBLP:journals/corr/abs-1802-01548} to implement a celled based NAS at first. 
+
 
 \bibliographystyle{ieeetr}
 \bibliography{ref}
