@@ -1,0 +1,92 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.75in]{geometry}
+
+\begin{document}
+	\begin{center}
+    
+    	% MAKE SURE YOU TAKE OUT THE SQUARE BRACKETS
+    
+		\LARGE{\textbf{Evolutionary Neural Architecture Search for Image Classification}} \\
+        \vspace{1em}
+        \Large{Project Proposal} \\
+        \vspace{1em}
+        \normalsize\textbf{ Bowen Zheng   }  
+        \normalsize\textbf{ Shijie Chen   } 
+        \normalsize\textbf{ Shuxin Wang  } 
+        
+        \vspace{1em}
+        \normalsize{Advisor: Hisao Ishibuchi} \\
+        \vspace{1em}
+        \normalsize{Southern University of Science and Technology} 
+	\end{center}
+    \begin{normalsize}
+    
+    	
+      
+		\section{Background \& Rationale}
+        
+      The great leap of computing resources in the past few decades made it possible to fully utilize the potential of neural networks. In recent years neural networks outperformed traditional methods in many fields of research, especially image classification. However, the state-of-the-art architectures are carefully designed and tuned by researchers for a specific problem. Therefore, people start to think about automate the design of neural networks in the hope of finding the best-performing network architecture efficiently.
+
+      Neural architecture search is a research field focusing on automating the design of neural networks. Currently there are a few popular approaches, including reinforcement learning, bayesian optimization, tree-based searching and genetic-based evolutionary algorithms. 
+
+      This project focuses on NAS for image classification problems. The reason is that this area is well explored and there exists many high-performance hand-crafted neural architectures. They provide a good guidance and target to our project. In addition, neural networks for image classification are mostly built upon basic cells including convolution, polling, normalization, and activation layers. This helps to shrink our search space.
+    
+    \section{Problem Definition}
+      Neural Architecture Search (NAS) refers to the process of automatically designing artificial neural network architectures \cite{elsken2018neural}. Research topics in NAS are generally categorized into three categories:
+      \begin{enumerate}
+        \item \textbf{\emph{Search Space}}
+         The search space of NAS denotes the space in which the NAS algorithm tries to find a neural network architecture.
+        \item \textbf{\emph{Search Strategy}} The search strategy of NAS denotes the search algorithm that is used to explore the \emph{search space}.
+        \item \textbf{\emph{Performance Estimation Strategy}} NAS algorithms will generate a large quantity of neural network architectures during search process. We need an efficient way to estimate the performance of each architecture to cut the demand for computational resource. 
+      \end{enumerate}
+
+   
+    \section{Objective}
+
+    The objective of this project is to propose a novel evolutionary approach for neural architecture search targeted at image classification. The specific objectives are as follows:
+    \begin{enumerate}
+      \item Investigate existing evolutionary neural architecture search algorithms.
+      \item Propose effective genetic operators for evolution of neural networks. This includes \emph{crossover}, \emph{mutation} and \emph{inheritance}.
+      \item Find an efficient estimate approximation of neural networks to cut computational cost.
+      \item Identify an effective population selection strategy.
+      \item Compare performance against hand-crafted networks as well as other NAS algorithms.
+    \end{enumerate}
+
+    \section{Related Works}
+    A lot of research works have been done in each of the three categories in NAS. Some proposed algorithms can design architectures that is on par of or even more capable than state-of-the-art hand-crafted networks.
+    
+    \subsection{Search Space}
+    
+    The search space of NAS determines the possible architectures a NAS algorithm can find.
+
+    The simplest search space is the simple multiple-layer structure, in which a neural network $A$ is composed of multiple layers $L_i$ connected to the neighboring layers. In this case, the search space can be described by (1) The maximum number of layers (2) The type and dimension of each layer and their hyper-parameters. 
+
+    In more recent studies, some researchers use a cell based search space in which the possible architecture of cells are explored. A cell is nothing but a smaller neural network. The entire neural network is constructed by connecting several cells together  in a predefined way. A cell has less layers but allows complex architectures like skip connections between any layers. The cell could also be some hand-crafted neural networks that have already been proofed effective.
+    \subsection{Search Strategy}
+    
+    \subsection{Performance Estimation Strategy}
+    
+    \section{Methodology}
+
+    There are several parts that needs to be done to complete this project.
+    \begin{enumerate}
+      \item Set the search space.
+      \item Design evolutionary operators and population update policy.
+      \item Design performance estimator for neural networks according to problem size and computational resources.
+    \end{enumerate}
+      
+    
+      
+    \noindent You can create bullets by doing:
+
+  \section{System Design}
+  
+  \section{Timeline}
+\end{normalsize}
+     
+
+\bibliographystyle{ieeetr}
+\bibliography{ref}
+
+\end{document}
