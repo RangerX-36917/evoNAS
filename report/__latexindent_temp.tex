@@ -1,0 +1,227 @@
+\documentclass[conference]{IEEEtran}
+
+  \usepackage{booktabs}
+  \usepackage{listing}
+  \usepackage{amsmath}
+  \usepackage{algorithm}
+  \usepackage{array}
+  \usepackage{url}
+\usepackage{algpseudocode}
+% \usepackage{algorithm}
+  \ifCLASSINFOpdf
+  
+  \else
+  
+  \fi
+  
+  \hyphenation{op-tical net-works semi-conduc-tor}
+  
+  
+  \begin{document}
+  
+  \title{CS303 Project1: Gomoku AI}
+  
+  \author{\IEEEauthorblockN{Shijie Chen}
+  \IEEEauthorblockA{Department of Computer Science and Engineering\\
+  Southern University of Science and Technology\\
+  Shenzhen, Guangdong, China\\
+  Email: 11612028@mail.sustc.edu.cn}
+  }
+  
+  \maketitle
+  
+  \begin{abstract}
+  Gomoku, also called five-in-a-row, is an abstract strategy board game. In this project, the author implemented an AI player of Gomoku that can play with either human or other AI players. This report describes the design and implementation of the AI player. It uses Minimax algorithm to search for best solutions each step. Due to the limited computational resources, the program is accelerated by $\alpha$-$\beta$ pruning and proper path-selection. Currently, the program is able to search 4 steps with 5 possible locations each step in 5 seconds. 
+  \end{abstract}
+  \IEEEpeerreviewmaketitle
+  
+  \section{Introduction}
+  The development of a Gomoku AI player includes understanding the rules of Gomoku, design and implement search algorithm, optimization and validation.
+
+  Gomoku, despite its simple rules, is very flexible. Brute force search algorithm requires too much computational power and is therefore abandoned. Techniques like Monte-Carlo Search and Neural Networks requires knowledge in Machine Learning, training data and some implementation skills.
+  
+  This projects uses Minimax algorithm, which is simple and powerful, as the main search algorithm. Further optimization is done by adding $\alpha$-$\beta$ pruning and proper path-selection strategy.
+  \section{Preliminaries}
+  This project is developed in Python 3.6.5 under Ubuntu 18.04 $\left(Windows\; Subsystem \; for\; Linux\; \right)$. Libraries used in this project includes Copy
+  \subsection{Gomoku Rules}
+  Typically, Gomoku is played on an 15x15 grid board like one that is used in Go games. Two players place stones of different colors (black/white) on empty intersections of the grid alternatively. A player wins if he obtains a consecutive 5 stones in any one of vertical, horizontal or the two diagonal directions.  
+  \subsection{GOMOKU Board Representation}
+  The board is represented by a two-dimensional array as shown in figure 1. As in Python, its a \emph{list of lists}. For each entry, 0 represents empty intersection, 1 represents a black stone and -1 represents a white stone. To make pattern matching easier, such matrix is converted to a matrix of 'a', 'b' and 'c' in which 'a' represents black stones, 'b' represents white stones and 'c' represents empty intersections.
+    
+	\begin{table}[htb]
+	\caption{representation of Gomoku board}
+	\centering
+    \begin{tabular}{cccc}
+    \toprule
+    Name&Variable&Board&Pattern\\
+    \midrule
+    Black Stone&COLOR\_BLACK&-1&a\\
+    White Stone&COlOR\_WHITE&1&b\\
+    Empty Intersection&COLOR\_NONE&0&c\\
+	\bottomrule
+	\end{tabular}
+	\label{table:1}
+	\end{table}
+  
+\section{Method}
+The design and implementation of a Gomoku player involves several parts. Initially, design evaluation functions for both the global chessboard and a single blank position on the board that shows the grade, chance of winning, of the board or point. Then, implement Minimax algorithm using the previously designed evaluation functions.
+
+However, Minimax algorithms explores a search tree whose size expands exponentially with search depth. Since search depth determines the "skill level" of the AI player, $\alpha$-$\beta$ pruning and proper path-selection are used to limit the size of search space in each step and increase the depth of search tree.
+\subsection{Evaluation Function for the Whole Board}
+This function scans the chessboard in four directions , do pattern-matching and assign scores for both colors according to the patterns. 
+\begin{enumerate}
+	\item Final score 
+	$$ Score = Score_{player} - Score_{opponent}$$
+	\item Pattern and Scores
+	
+	Scores of more \emph{dangerous} patterns must \emph{dominates} scores of less \emph{dangerous} ones. Table \ref{table:1} shows a score board for patterns in black('a').
+
+	\begin{table}[htb]
+	\caption{score board for global patterns}
+	\centering
+    \begin{tabular}{cccc}
+    \toprule
+    Pattern&Score\\
+    \midrule
+	aaaaa&1000000000000\\
+	caaaac&3000000000\\
+	caaaab&1000000\\
+	baaaac&1000000\\
+	caaac&1000000\\
+	\bottomrule
+	\end{tabular}
+	\label{table:1}
+	\end{table}
+\end{enumerate}
+
+\begin{algorithm}
+    \caption{Global Evaluation}
+\begin{algorithmic}[1]
+    \State $AC \gets new\; ACautomata()$
+    \State $AC.loadKeys(GlobalScoreBoard.keys$
+    \State $slices \gets genStr(chessboard)$
+    \ForAll{ $x \in slices$}
+        \State $patternCount.add(AC.match(x))$
+    \EndFor
+    \ForAll{ $x \in patternCount.keys$}
+        \If{$ x \in PlayerPattern$}
+        \State $playerScore \gets playerScore + GlobalScoreBoard*patternCount.get(x)$
+        \Else
+        \State $opponentScore \gets opponentScore + Global ScoreBoard*patternCount.get(x)$
+        \EndIf
+    \EndFor
+    \State $Score \gets playerScore - opponentScore$
+\end{algorithmic}
+\end{algorithm}
+\subsection{Evaluation Function for Single Position}
+Similarly, we develop a score board for patterns that may appear when an empty position is assigned a stone of a color. The score is the sum of \emph{score} it may get when inserting a stone in the player's color and the \emph{danger} it may cause when inserting a stone in the opponent's color.
+
+The score of a single point is used to sort the points in search set in \emph{proper path-selection}
+% \begin{enumerate}
+	% \item Final score
+	% $$Score = score + danger$$
+	Score Board for \emph{score} and \emph{danger}
+	
+	\begin{table}[htb]
+	\caption{score value for single position}
+	\centering
+    \begin{tabular}{cccc}
+    \toprule
+    Pattern&Score\\
+    \midrule
+	aaaaa&1000000000000\\
+	caaaac&3000000000\\
+	caaaab&410000000\\
+    baaaac&410000000\\
+    acaaaa&410000000\\
+    aacaa&410000000\\
+    aaaca&410000000\\
+    caaacc&1000000\\
+    ccaaac&1000000\\
+    acaca&1000000\\
+    caacac&1000000\\
+    cacaac&1000000\\
+    ccaacc&1500\\
+    cacacc&1000\\
+    ccacac&1000\\
+    cccacc&10\\
+    ccaccc&10\\    
+	\bottomrule
+	\end{tabular}
+	\label{table:1}
+	\end{table}
+	
+
+	\begin{table}[htb]
+	\caption{danger value for single position}
+	\centering
+    \begin{tabular}{cccc}
+    \toprule
+    Pattern&Score\\
+    \midrule
+	bbbbb&900000000000\\
+	cbbbbc&2100000000\\
+	\bottomrule
+	\end{tabular}
+	\label{table:1}
+	\end{table}
+	
+% \end{enumerate}
+For a single position $pos$, get the strings that contains $pos$ in four directions. Then apply pattern matching to decide its score and danger value. Final score is the sum of score and danger value.
+\begin{algorithm}
+    \caption{Global Evaluation}
+\begin{algorithmic}[1]
+    \State $AC \gets new\; ACautomata()$
+    \State $AC.loadKeys(SingleScoreBoard.keys$
+    \State $playerSlices \gets getStr(chessboard, pos, color)$
+    \State $opponentSlices \gets getStr(chessboard, pos, opponentColor)$
+    \ForAll{ $x \in playerSlices \bigcup opponentSlices $}
+        \State $patternCount.add(AC.match(x))$
+    \EndFor
+
+    \ForAll{ $x \in patternCount.keys$}
+        \If{$ x \in PlayerPattern$}
+        \State $playerScore \gets playerScore + SingleScoreBoard*patternCount.get(x)$
+        \Else
+        \State $opponentScore \gets opponentScore + ingleDangerBoard*patternCount.get(x)$
+        \EndIf
+    \EndFor
+    \State $Score \gets playerScore + opponentScore$
+\end{algorithmic}
+\end{algorithm}
+\subsection{The Minimax Search Algorithm}
+Minimax Algorithm is used in this project as a main search algorithm. The idea is based on adversary search. Since the global evaluation function shows the extent to which the situation is good for the AI player, the AI player will try to maximize the evaluation score. On the contrary, the opponent will try to minimize the score. Minimax algorithm works by simulating this process. It uses strategy of the Max Player (the AI) and the Min Player (the opponent) alternatively on each level of search and finally obtain an optimal solution.
+
+More details of this algorithm can be found on the Internet. 
+
+\subsection{$\alpha$-$\beta$ Pruning}
+In order to increase the depth of the search tree in Minimax algorithm, we must limit the size of search space in each level. $\alpha$-$\beta$ pruning works by skipping obviously un-optimal points while searching. Since Max Player will choose the step with score greater than current max ($\alpha$), steps with score less than current max can be skipped when the Min Player plays(Next level is Max Player's turn). Therefore the step is no longer expanded. Same thing happens to when the Max Player plays.
+
+\subsection{Proper Path Selection}
+
+\section{Validation}
+	The player is tested with test cases provided by CS303 Artificial Intelligence course as well as some scenarios encountered during games with other AIs and human players. 
+
+  \section{Conclusion}
+  The conclusion goes here.
+
+  \section*{Acknowledgment}
+
+  The authors would like to thank...
+  
+  \begin{thebibliography}{1}
+  
+  \bibitem{IEEEhowto:kopka}
+  H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
+    0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
+  
+  \end{thebibliography}
+  
+  
+  
+  
+  % that's all folks
+  \end{document}
+  
+  
+  
