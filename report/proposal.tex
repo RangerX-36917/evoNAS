@@ -74,7 +74,7 @@
 
     Evolutionary algorithms has been used to evolve neural networks since 1989\cite{miller1989designing}. Earlier works use genetic algorithms to both optimize the structure of neural networks and train the networks\cite{stanley2002evolving}. However, with the birth of back-propagation (BP), recent works of neural-evolution use genetic algorithms only for optimizing neural architectures and use BP to train the networks\cite{real2017large}. In the context of NAS, the individuals in the genetic algorithm are neural network architectures and the genetic operations (crossover and mutation) are used to alter the architecture by adding/removing layers or change connectivity of nodes.
 
-    Genetic algorithms shows their diversity in how they sample parents, generate offspring and update population. Some work choose parents from a preto-optimal front\cite{elsken2018efficient} while others use tournament selection\cite{liu2018progressive}\cite{real2018regularized}\cite{real2017large}. When generating offsprings, some algorithms randomly initialize weight of child networks. In comparison, Lamarckian inheritance is used in \cite{elsken2018efficient} so that child networks could inherit weight of its parent and the training cost is reduced. To update population, some algorithms abandon least capable individuals\cite{real2017large} while some delete the oldest individuals\cite{real2018regularized}. 
+    Genetic algorithms shows their diversity in how they sample parents, generate offspring and update population. Some work choose parents from a preto-optimal front\cite{elsken2018efficient} while others use tournament selection\cite{liu2018progressive}\cite{real2018regularized}\cite{real2017large}. When generating offsprings, some algorithms randomly initialize weight of child networks. In comparison, Lamarckian inheritance is used in \cite{elsken2018efficient} so that child networks could inherit weight of its parent and the training cost is reduced. To update population, some algorithms abandon least capable individuals\cite{real2017large} while some delete the oldest individuals\cite{real2018regularized}. A more sophisticated policy is developed by \cite{Hornby:2006:AAP:1143997.1144142} and \cite{DBLP:journals/corr/abs-1802-01548} in which the age of the individuals are taken into account.
     
     There are other methods that are used to implement NAS, including bayesian optimization, reinforcement learning ,tree-based search and gradient-based methods. We don't discuss them here since we use evolutionary algorithms in our project.
 
@@ -86,16 +86,14 @@
     An alternative is to estimate performance on lower fidelities. More specifically, to train the network for shorter period of time\cite{zoph2018learning} or on some subset of the dataset\cite{klein2016fast}. However, the estimate must ensure the result ranking of different networks must be the same as that of complete training. That is to say, there exist a trade-off between computational load and estimation fidelity.
 
     Another approach to estimate performance is based on learning curve extrapolation\cite{domhan2015speeding}. This method accelerate estimation by stop poor performance networks at the early state of training based on statistical patterns of learning curves. Other researchers propose ways to predict neural network performance based on architectural and cell properties\cite{liu2018progressive}. 
+
     \section{Methodology}
 
-    There are several parts that needs to be done to complete this project.
-    \begin{enumerate}
-      \item Set the search space.
-      \item Design evolutionary operators and population update policy.
-      \item Design performance estimator for neural networks according to problem size and computational resources.
-    \end{enumerate}
-      
-    
+    We will develop an evolutionary neural architecture search algorithm based on the $age$ of individuals. By incorporating $age$ as a part of gene, we can prolong the existence of good individuals\cite{DBLP:journals/corr/abs-1802-01548} and kill average individuals when their age reach a certain limit\cite{Hornby:2006:AAP:1143997.1144142}. 
+
+    Combining the advantage of the above works, we propose a population update police based on $age$ and $bloodline$. An individual is dropped from the total population if its $age$ exceeds a predefined $lifetime$. However, we prolong its life if its offspring performs well (e.g. within top $P\%$ in ranking). In this way, we can preserve a good $bloodline$ in the population.
+
+    To test the effectiveness of our algorithm, we will experiment on image classification datasets including CIFAR-10, CIFAR-100 and will possibly extend to IMAGENET.
       
     \noindent You can create bullets by doing:
 
