@@ -1,5 +1,9 @@
 import random
 import Model
+import copy
+
+hidden_layer_range = [i for i in range(100)]
+
 
 def random_architecture():
     """Returns a random architecture (bit-string) represented as an int."""
@@ -26,3 +30,30 @@ def mutate_arch(parent_arch):
     child_arch = parent_arch ^ (1 << position)
 
     return child_arch
+
+
+def random_NAS_architecture():
+    arch = []
+    for i in range(5):
+        arch.append(random.sample(hidden_layer_range[:i + 2], 2))
+        arch[i].append(random.randint(1, 13))
+        arch[i].append(random.randint(1, 13))
+    return arch
+
+
+def NAS_mutate_arch(arch):
+    mutate_position = random.randint(0, len(arch) - 1)
+    arch = copy.deepcopy(arch)
+    tmp = arch[mutate_position]
+    if random.random() < 0.2:
+        mutate_range = hidden_layer_range[:mutate_position + 2]
+        mutate_range.remove(tmp[0])
+        mutate_range.remove(tmp[1])
+        if mutate_range:
+            tmp[random.randint(0, 1)] = random.sample(mutate_range, 1)[0]
+        else:
+            tmp[random.randint(2, 3)] = random.randint(1, 13)
+
+    else:
+        tmp[random.randint(2, 3)] = random.randint(1, 13)
+    return arch

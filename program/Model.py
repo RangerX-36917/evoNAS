@@ -77,3 +77,19 @@ def _sum_bits(arch):
         total += arch & 1
         arch = (arch >> 1)
     return total
+
+
+class NASModel(object):
+    def __init__(self):
+        self.arch = None
+        self.accuracy = None
+        self.age = 0
+        self.life = 0
+
+    def __str__(self):
+        """Prints a readable version of this bitstring."""
+        return '{0:b}'.format(self.arch)
+
+    def train_NAS(self):
+        return random.random()
+
