@@ -4,6 +4,10 @@ import copy
 
 hidden_layer_range = [i for i in range(100)]
 
+# [(0,2),(0,3),(0,4),(0,5),(0,6),(1,2),(1,3),(1,4),(1,5),(1,6),(2,3),(2,4),(2,5),(2,6),
+#   (3,4),(3,5),(3,6),(4,5),(4,6),(5,6)]
+N = 20
+
 
 def random_architecture():
     """Returns a random architecture (bit-string) represented as an int."""
@@ -33,15 +37,24 @@ def mutate_arch(parent_arch):
 
 
 def random_NAS_architecture():
+    """
+
+    :return: arch is a vector []
+    """
     arch = []
-    for i in range(5):
-        arch.append(random.sample(hidden_layer_range[:i + 2], 2))
-        arch[i].append(random.randint(1, 13))
-        arch[i].append(random.randint(1, 13))
+    for i in range(N):
+        arch.append(random.randint(1, 13))
     return arch
 
 
 def NAS_mutate_arch(arch):
+    mutate_position = random.randint(0, len(arch) - 1)
+    arch = copy.deepcopy(arch)
+    arch[mutate_position] = random.randint(1, 13)
+    return arch
+
+
+def NAS_mutate_arch_old(arch):
     mutate_position = random.randint(0, len(arch) - 1)
     arch = copy.deepcopy(arch)
     tmp = arch[mutate_position]
@@ -56,4 +69,13 @@ def NAS_mutate_arch(arch):
 
     else:
         tmp[random.randint(2, 3)] = random.randint(1, 13)
+    return arch
+
+
+def random_NAS_architecture_old():
+    arch = []
+    for i in range(5):
+        arch.append(random.sample(hidden_layer_range[:i + 2], 2))
+        arch[i].append(random.randint(1, 13))
+        arch[i].append(random.randint(1, 13))
     return arch
