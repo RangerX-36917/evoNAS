@@ -81,7 +81,8 @@ def _sum_bits(arch):
 
 class NASModel(object):
     def __init__(self):
-        self.arch = None
+        self.normal_arch = None
+        self.reduction_arch = None
         self.accuracy = None
         self.age = 0
         self.life = 0
