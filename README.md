@@ -25,19 +25,13 @@ $$
 
 a,b代表输入的隐层，对于 $k$ 号隐层 ，他的输入隐层取自 0~$k-1$
 
-e,f是其使用的卷积核, 用1~13的编号表示：
+e,f是其使用的卷积核, 用1~7的编号表示：
 
 1. identity
-2. 1x7 then 7x1 convolution
 3. 3x3 average pooling
-4. 5x5 max pooling
-5. 1x1 convolution
-6. 3x3 depthwise-separable conv
-7. 7x7 depthwise-separable conv
-8. 1x3 then 3x1 convolution
-9. 3x3 dilated convolution
-10. 3x3 max pooling
-11. 7x7 max pooling
-12. 3x3 convolution
-13. 5x5 depthwise-seperable conv
+3. 3x3 max pooling
+4. 1x1 convolution
+5. 3x3 depthwise-separable conv
+6. 3x3 dilated convolution
+7. 3x3 convolution
 
