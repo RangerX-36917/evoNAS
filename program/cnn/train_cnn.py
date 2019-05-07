@@ -7,7 +7,7 @@ from torch.utils.data.dataloader import DataLoader
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 
-from cnn import CNN
+from cnn.CNN import CNN
 
 LR = 0.001
 DROPOUT = 0.2

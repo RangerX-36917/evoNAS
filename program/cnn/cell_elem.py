@@ -9,7 +9,7 @@ import torch.nn as nn
 class BasicConv2d(nn.Sequential):
     def __init__(self,in_channels:int,out_channels:int,kernel_size:int,stride:int=1):
         super(BasicConv2d,self).__init__()
-        self.relu = nn.ReLU(inplace=True)
+        self.relu = nn.ReLU()
         self.conv=nn.Conv2d(in_channels,
                             out_channels,
                             kernel_size=kernel_size,
@@ -39,10 +39,10 @@ class SeparableConv2dx2(nn.Sequential):
         if(padding==None):
             padding=(kernel_size-1)/2
 
-        self.relu = nn.ReLU(inplace=True)
+        self.relu = nn.ReLU()
         self.separable_1 = SeparableConv2d(in_channels, out_channels, kernel_size, stride, padding, bias=bias)
         self.bn_sep_1 = nn.BatchNorm2d(out_channels, eps=0.001, momentum=0.1, affine=True)
-        self.relu1 = nn.ReLU(inplace=True)
+        self.relu1 = nn.ReLU()
         self.separable_2 = SeparableConv2d(out_channels, out_channels, kernel_size, 1, padding, bias=bias)
         self.bn_sep_2 = nn.BatchNorm2d(out_channels, eps=0.001, momentum=0.1, affine=True)
 
@@ -50,7 +50,7 @@ class SeparableConv2dx2(nn.Sequential):
 class DilatedConv2d(nn.Sequential):
     def __init__(self,in_channels:int,out_channels:int,kernel_size:int,stride:int=1,dilation:int=2):
         super(DilatedConv2d,self).__init__()
-        self.relu = nn.ReLU(inplace=True)
+        self.relu = nn.ReLU()
         self.conv=nn.Conv2d(in_channels,
                             out_channels,
                             kernel_size=kernel_size,

@@ -22,7 +22,7 @@ class CNN(nn.Module):
         normal_cell_conf = cell_config_list['normal_cell']
         _output_node_idx = len(normal_cell_conf) + 1
         branch_num = len(normal_cell_conf[_output_node_idx])
-        print('branch num:', branch_num)
+        # print('branch num:', branch_num)
 
         self.class_num = class_num
 
@@ -42,21 +42,21 @@ class CNN(nn.Module):
 
         feature_map_num3 = channel3 * branch_num
 
-        # TODO: use parameter representation (current only suitable for 28*28 image)
-        self.gap_layer = nn.AvgPool2d(kernel_size=7)
+        # TODO: use parameter representation (current only suitable for 32*32 image)
+        self.gap_layer = nn.AvgPool2d(kernel_size=8)
 
         self.fc1 = nn.Linear(in_features=channel3, out_features=100)
         self.fc2 = nn.Linear(in_features=100, out_features=class_num)
-        self.softmax_layer = nn.Softmax()
+        self.softmax_layer = nn.Softmax(dim=1)
 
     def forward(self, x: torch.Tensor):
         # input(28,28)
         cnn_part = nn.Sequential(
-            self.normal_layer1,  # -> (28,28,#)
+            self.normal_layer1,  # -> (32,32,#)
             self.reduction_layer1,
-            self.normal_layer2,  # -> (14,14,#)
+            self.normal_layer2,  # -> (16,16,#)
             self.reduction_layer2,
-            self.normal_layer3,  # -> (7,7,#)
+            self.normal_layer3,  # -> (8,8,#)
             self.gap_layer,  # -> (1,1,#)
         )
 
@@ -99,7 +99,7 @@ class ResBlock(nn.Module):
             if i == 0:
                 x = self.normal_cells[i](x, x)
             else:
-                print("=======")
+                # print("=======")
                 x_tmp = x
                 x = self.normal_cells[i](x, x_skip)
                 x_skip = x_tmp
@@ -134,8 +134,8 @@ class Cell(nn.Module):
                                                 conv_channels)
 
     def forward(self, x_prev, x_skip):
-        print(x_prev.shape)
-        print(x_skip.shape)
+        # print(x_prev.shape)
+        # print(x_skip.shape)
         hidden_state = [x_skip, x_prev]
         for i in range(2, self.output_node_idx + 1):
             data = []
