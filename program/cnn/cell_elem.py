@@ -37,7 +37,7 @@ class SeparableConv2dx2(nn.Sequential):
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=None, bias=False):
         super(SeparableConv2dx2, self).__init__()
         if(padding==None):
-            padding=(kernel_size-1)/2
+            padding=(kernel_size-1)//2
 
         self.relu = nn.ReLU()
         self.separable_1 = SeparableConv2d(in_channels, out_channels, kernel_size, stride, padding, bias=bias)
@@ -59,3 +59,16 @@ class DilatedConv2d(nn.Sequential):
                             dilation=dilation,
                             bias=False)
         self.bn=nn.BatchNorm2d(out_channels,eps=0.001, momentum=0.1)
+
+
+class BasicPolling2d(nn.Sequential):
+    def __init__(self, in_channels: int, out_channels: int, kernel_size: int,type='max'):
+        super(BasicPolling2d,self).__init__()
+        self.remap = BasicConv2d(in_channels, out_channels, kernel_size=1)
+        self.relu = nn.ReLU()
+        if(type=='max'):
+            self.pooling=nn.MaxPool2d(kernel_size=kernel_size,stride=1, padding=1)
+        elif(type=='avg'):
+            self.pooling=nn.AvgPool2d(kernel_size=kernel_size,stride=1, padding=1)
+
+        self.bn=nn.BatchNorm2d(out_channels, eps=0.001, momentum=0.1, affine=True)

@@ -1,8 +1,10 @@
-from cnn.CNN import CNN, ResBlock, Cell
-from cnn.cell_elem import SeparableConv2dx2
+from cnn.CNN import CNN, ResBlock, Cell, choose_conv_elem
+from program.cnn.cell_elem import SeparableConv2dx2
 
 from torchsummary import summary
 import torch.nn as nn
+
+from cnn.cell_elem import *
 
 if __name__ == "__main__":
     config_list = {
@@ -11,7 +13,7 @@ if __name__ == "__main__":
         4: [(0, 1)],
         5: [(1, 4)],
         6: [(1, 1), (4, 1), (5, 1)],
-        7: [(2, 1), (3, 1), (4, 3), (5, 1), (6, 1)]
+        7: [(2, 1), (3, 1), (4, 2), (5, 1), (6, 1)]
     }
     config_list = {2: [(0, 1), (1, 5)],
                    3: [(0, 5), (1, 3)],
@@ -22,12 +24,16 @@ if __name__ == "__main__":
 
     cell_config_list = {'normal_cell': config_list}
 
+    # conv=choose_conv_elem(3,3,64)
+    #
+    # summary(conv,(3,28,28))
+
     cnn = CNN(cell_config_list, class_num=10)
     # cnn=ResBlock(config_list,2,channels=128,in_channels=32)
     # cnn=Cell(config_list,in_channels=32,conv_channels=128)
     # print(cnn)
     # summary(cnn,[(32,28,28),(32,28,28)])
-    summary(cnn, (3, 28, 28))
+    summary(cnn, (3, 32, 32))
 
     # net=nn.Sequential(
     #     nn.ReLU(),
