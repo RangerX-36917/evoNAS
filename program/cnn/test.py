@@ -13,6 +13,8 @@ if __name__ == "__main__":
         6: [(1, 1), (4, 1), (5, 1)],
         7: [(2, 1), (3, 1), (4, 3), (5, 1), (6, 1)]
     }
+
+
     cell_config_list = {'normal_cell': config_list}
 
     cnn = CNN(cell_config_list, class_num=10)
