@@ -38,6 +38,17 @@ def mutate_arch(parent_arch):
     return child_arch
 
 
+def cal_output_layer(arch):
+    arch[hidden_layer_num + 2] = []
+    for i in range(2, hidden_layer_num + 2):
+        arch[hidden_layer_num + 2].append((i, 1))
+    for i in range(2, hidden_layer_num + 2):
+
+        for j in range(2, i):
+            if arch[i][j][1] != 0:
+                arch[hidden_layer_num + 2][j - 2] = (j, 0)
+
+
 def random_NAS_architecture():
     """
 
@@ -54,6 +65,10 @@ def random_NAS_architecture():
         if count == 0:
             sample = random.randint(0, i - 1)
             arch[i][sample] = (sample, random.randint(1, max_op))
+
+    cal_output_layer(arch)
+
+
     return arch
 
 
@@ -71,6 +86,10 @@ def NAS_mutate_arch(arch):
     if count == 1 and arch[mutate_layer][mutate_position][1] > 0 and op_mutated == 0:
         op_mutated = random.randint(1, max_op)
     arch[mutate_layer][mutate_position] = (mutate_position, op_mutated)
+
+    cal_output_layer(arch)
+
+
     return arch
 
 

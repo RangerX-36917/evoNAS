@@ -24,10 +24,10 @@ sns.set_style('white')
 # ax.scatter(
 #     xvalues, yvalues, marker='.', facecolor=(0.0, 0.0, 0.0),
 #     edgecolor='r', linewidth=1, s=1)
-try:
-    history = NewAgingEvolution.NAS_evolution(cycles=10000, population_size=500, sample_size=50)
-except:
-    pass
+# try:
+history = NewAgingEvolution.NAS_evolution(cycles=10000, population_size=500, sample_size=50)
+# except:
+#     pass
 
 det_str = pickle.dumps(history)
 

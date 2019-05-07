@@ -1,5 +1,5 @@
 from cnn.CNN import CNN, ResBlock, Cell
-from program.cnn.cell_elem import SeparableConv2dx2
+from cnn.cell_elem import SeparableConv2dx2
 
 from torchsummary import summary
 import torch.nn as nn
@@ -13,7 +13,12 @@ if __name__ == "__main__":
         6: [(1, 1), (4, 1), (5, 1)],
         7: [(2, 1), (3, 1), (4, 3), (5, 1), (6, 1)]
     }
-
+    config_list = {2: [(0, 1), (1, 5)],
+                   3: [(0, 5), (1, 3)],
+                   4: [(0, 1), (1, 2), (2, 7), (3, 5)],
+                   5: [(0, 4), (3, 4), (4, 7)],
+                   6: [(0, 3), (1, 5), (2, 1), (3, 2), (4, 5)],
+                   7: [(5, 1), (6, 1)]}
 
     cell_config_list = {'normal_cell': config_list}
 

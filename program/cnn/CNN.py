@@ -2,7 +2,7 @@ import torch
 
 import torch.nn as nn
 
-from program.cnn.cell_elem import BasicConv2d, SeparableConv2dx2, DilatedConv2d
+from cnn.cell_elem import BasicConv2d, SeparableConv2dx2, DilatedConv2d
 
 '''
     cell config description
