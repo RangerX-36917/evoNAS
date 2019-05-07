@@ -92,10 +92,10 @@ class NASModel(object):
         return '{0:b}'.format(self.arch)
 
     def train_NAS(self):
-        trainloader, testloader, classes=CNN.load_dataset(CNN.DATASET_PATH)
+        trainloader, testloader, classes=cnn.CNN.CNN.load_dataset(cnn.CNN.CNN.DATASET_PATH)
         cell_config_list = {'normal_cell':self.normal_arch}
-        model = CNN(cell_config_list, class_num=len(classes))
-        CNN.train(model,trainloader)
-
-	return CNN.evaluate(model,testloader)
+        model = cnn.CNN.CNN(cell_config_list, class_num=len(classes))
+        cnn.CNN.CNN.train(model,trainloader)
+        
+        return cnn.CNN.CNN.evaluate(model,testloader)
 
