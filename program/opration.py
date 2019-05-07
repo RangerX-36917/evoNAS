@@ -7,6 +7,8 @@ hidden_layer_range = [i for i in range(100)]
 # [(0,2),(0,3),(0,4),(0,5),(0,6),(1,2),(1,3),(1,4),(1,5),(1,6),(2,3),(2,4),(2,5),(2,6),
 #   (3,4),(3,5),(3,6),(4,5),(4,6),(5,6)]
 N = 20
+hidden_layer_num = 5
+max_op = 7
 
 
 def random_architecture():
@@ -41,16 +43,34 @@ def random_NAS_architecture():
 
     :return: arch is a vector []
     """
-    arch = []
-    for i in range(N):
-        arch.append(random.randint(1, 13))
+    arch = {}
+    for i in range(2, hidden_layer_num + 2):
+        count = 0
+        arch[i] = []
+        for j in range(i):
+            rand_op = random.randint(0, max_op)
+            count += rand_op
+            arch[i].append((j, rand_op))
+        if count == 0:
+            sample = random.randint(0, i - 1)
+            arch[i][sample] = (sample, random.randint(1, max_op))
     return arch
 
 
 def NAS_mutate_arch(arch):
-    mutate_position = random.randint(0, len(arch) - 1)
     arch = copy.deepcopy(arch)
-    arch[mutate_position] = random.randint(1, 13)
+
+    mutate_layer = random.randint(2, hidden_layer_num + 1)
+    mutate_position = random.randint(0, mutate_layer - 1)
+
+    count = 0
+    for i in range(mutate_layer):
+        if arch[mutate_layer][i][1] > 0:
+            count += 1
+    op_mutated = (arch[mutate_layer][mutate_position][1] + random.randint(1, max_op)) % (max_op + 1)
+    if count == 1 and arch[mutate_layer][mutate_position][1] > 0 and op_mutated == 0:
+        op_mutated = random.randint(1, max_op)
+    arch[mutate_layer][mutate_position] = (mutate_position, op_mutated)
     return arch
 
 

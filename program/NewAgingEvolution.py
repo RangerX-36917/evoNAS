@@ -71,8 +71,8 @@ def regularized_evolution(cycles, population_size, sample_size):
 
     return history
 
-def NAS_evolution(cycles, population_size, sample_size):
 
+def NAS_evolution(cycles, population_size, sample_size):
     # population = collections.deque()
     population = []
     history = []  # Not used by the algorithm, only used to report results.
@@ -81,7 +81,8 @@ def NAS_evolution(cycles, population_size, sample_size):
     # while len(population) < population_size:
     for i in range(population_size):
         model = Model.NASModel()
-        model.arch = opration.random_NAS_architecture()
+        model.normal_arch = opration.random_NAS_architecture()
+        model.reduction_arch = opration.random_NAS_architecture()
         model.accuracy = model.train_NAS()
         model.age = population_size - i
         model.life = population_size
@@ -105,7 +106,12 @@ def NAS_evolution(cycles, population_size, sample_size):
 
         # Create the child model and store it.
         child = Model.NASModel()
-        child.arch = opration.NAS_mutate_arch(parent.arch)
+        if random.random() < 0.3:
+            child.normal_arch = parent.normal_arch
+            child.reduction_arch = opration.NAS_mutate_arch(parent.reduction_arch)
+        else:
+            child.reduction_arch = parent.reduction_arch
+            child.normal_arch = opration.NAS_mutate_arch(parent.normal_arch)
         child.accuracy = child.train_NAS()
         child.life = population_size
         population.append(child)
