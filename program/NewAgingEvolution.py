@@ -106,7 +106,7 @@ def NAS_evolution(cycles, population_size, sample_size):
 
         # Create the child model and store it.
         child = Model.NASModel()
-        if random.random() < 0.3:
+        if random.random() < 0:
             child.normal_arch = parent.normal_arch
             child.reduction_arch = opration.NAS_mutate_arch(parent.reduction_arch)
         else:

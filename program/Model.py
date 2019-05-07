@@ -92,5 +92,5 @@ class NASModel(object):
         return '{0:b}'.format(self.arch)
 
     def train_NAS(self):
-        return random.random()
+	return get_eval({'normal_cell':self.normal_arch})
 
