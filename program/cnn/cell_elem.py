@@ -14,9 +14,10 @@ class BasicConv2d(nn.Sequential):
                             out_channels,
                             kernel_size=kernel_size,
                             stride=stride,
-                            padding=(kernel_size-1)/2,
+                            padding=(kernel_size-1)//2,
                             bias=False)
         self.bn=nn.BatchNorm2d(out_channels,eps=0.001, momentum=0.1)
+
 
 
 
@@ -54,7 +55,7 @@ class DilatedConv2d(nn.Sequential):
                             out_channels,
                             kernel_size=kernel_size,
                             stride=stride,
-                            padding=((kernel_size-1)*(dilation-1)+kernel_size-1)/2,
+                            padding=((kernel_size-1)*(dilation-1)+kernel_size-1)//2,
                             dilation=dilation,
                             bias=False)
         self.bn=nn.BatchNorm2d(out_channels,eps=0.001, momentum=0.1)
