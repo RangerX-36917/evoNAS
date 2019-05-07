@@ -27,17 +27,17 @@ class CNN(nn.Module):
         self.class_num = class_num
 
         # TODO: use parameter representation (current only suitable for image with 3 channels)
-        channel1 = 64
+        channel1 = 32
         self.normal_layer1 = ResBlock(normal_cell_conf, N, channels=channel1, in_channels=3)
         self.reduction_layer1 = nn.MaxPool2d(kernel_size=2)
         feature_map_num1 = channel1 * branch_num
 
-        channel2 = 256
+        channel2 = 64
         self.normal_layer2 = ResBlock(normal_cell_conf, N, channels=channel2, in_channels=channel1)
         self.reduction_layer2 = nn.MaxPool2d(kernel_size=2)
         feature_map_num2 = channel2 * branch_num
 
-        channel3 = 512
+        channel3 = 128
         self.normal_layer3 = ResBlock(normal_cell_conf, N, channels=channel3, in_channels=channel2)
 
         feature_map_num3 = channel3 * branch_num
