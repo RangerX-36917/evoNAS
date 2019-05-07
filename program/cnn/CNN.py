@@ -2,7 +2,7 @@ import torch
 
 import torch.nn as nn
 
-from program.cnn.cell_elem import BasicConv2d, SeparableConv2dx2, DilatedConv2d
+from program.cnn.cell_elem import *
 
 '''
     cell config description
@@ -118,7 +118,7 @@ class Cell(nn.Module):
         for dstnode, srclist in config_list.items():
             self.config_list[dstnode] = []
             for srcnode, opt in srclist:
-                if opt >= 1 or opt <= 7:
+                if opt >= 1 and opt <= 7:
                     if srcnode == 0 or srcnode == 1:
                         conv = choose_conv_elem(opt, in_channels, conv_channels)
                         self.config_list[dstnode].append((srcnode, conv))
@@ -158,9 +158,9 @@ def choose_conv_elem(opt: int, in_channels=None, out_channels=None):
         # conv = nn.Identity()
         conv = BasicConv2d(in_channels, out_channels, kernel_size=1)
     if (opt == 2):  # 3x3 average pooling
-        conv = nn.AvgPool2d(kernel_size=3, stride=1, padding=1)
+        conv = BasicPolling2d(in_channels,out_channels,kernel_size=3,type='avg')
     if (opt == 3):  # 3x3 max pooling
-        conv = nn.MaxPool2d(kernel_size=3, stride=1, padding=1)
+        conv = BasicPolling2d(in_channels,out_channels,kernel_size=3,type='max')
     if (opt == 4):  # 1x1 convolution
         conv = BasicConv2d(in_channels, out_channels, kernel_size=1)
     if (opt == 5):  # 3x3 depthwise-separable conv
