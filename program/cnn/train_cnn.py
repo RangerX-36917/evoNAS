@@ -2,7 +2,8 @@ import torch.nn
 import torch
 import torch.optim
 from torch.utils.data.dataloader import DataLoader
-
+import torchvision
+import torchvision.transforms as transforms
 LR=0.001
 DROPOUT=0.2
 EPOCH=100
@@ -29,7 +30,16 @@ def train(model:torch.nn.Module,train_data):
                       )
 
 def load_dataset():
-    pass
+    transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+
+    trainset = torchvision.datasets.CIFAR10(root='../data', train=True, download=True, transform=transform)
+    trainloader = torch.utils.data.DataLoader(trainset, batch_size=10, shuffle=True, num_workers=2)
+    testset = torchvision.datasets.CIFAR10(root='../data', train=False, download=True, transform=transform)
+    testloader = torch.utils.data.DataLoader(testset, batch_size=10, shuffle=False, num_workers=2)
+
+    classes = ('plane', 'car', 'bird', 'cat',
+               'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+    return trainloader, testloader, classes
 
 def save_model():
     pass
