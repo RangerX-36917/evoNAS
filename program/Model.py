@@ -1,7 +1,6 @@
 import random
-import sys
-sys.path.append("../")
-from .cnn import train_cnn, CNN
+import program.cnn.train_cnn as train_cnn
+import program.cnn.CNN as CNN
 DIM = 1000  # Number of bits in the bit strings (i.e. the "models").
 NOISE_STDEV = 0.01  # Standard deviation of the simulated training noise.
 
