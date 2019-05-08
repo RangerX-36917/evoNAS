@@ -159,6 +159,8 @@ class Cell(nn.Module):
 
 def choose_conv_elem(opt: int, in_channels=None, out_channels=None):
     conv = None
+
+    # TODO：for pooling layer don't use 1x1 conv to remap fisrt. => calculate right in_channel
     if (opt == 1):  # identity -> # 1x1 convolution
         # conv = nn.Identity()
         conv = BasicConv2d(in_channels, out_channels, kernel_size=1)
