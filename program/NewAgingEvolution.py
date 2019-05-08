@@ -119,7 +119,7 @@ def NAS_evolution(cycles, population_size, sample_size):
 
         # Remove the died model.
         population.sort(key=lambda i: i.accuracy)
-
+        print("---> best:", population[len(population)-1].normal_arch, "\n---> with acc: ",population[len(population)-1].accuracy)
         if child.accuracy > population[int(0.8 * len(population))].accuracy:
             parent.life += int(population_size * 0.01)
 
