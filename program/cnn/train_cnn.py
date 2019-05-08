@@ -11,8 +11,8 @@ from cnn.CNN import CNN
 
 LR = 0.001
 DROPOUT = 0.2
-EPOCH = 100
-BATCH_SIZE = 10
+EPOCH = 10
+BATCH_SIZE = 100
 DATASET_PATH = './dataset'
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -22,6 +22,7 @@ def train(model: torch.nn.Module, trainloader):
     model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=LR)
     loss_func = torch.nn.CrossEntropyLoss()
+    model.to(device)
 
     for epoch in range(EPOCH):
         start_time = time.time()
@@ -42,7 +43,7 @@ def train(model: torch.nn.Module, trainloader):
                 print('epoch: {0}, iter:{1} loss:{2:.4f}'.format(epoch, step, running_loss / 50))
                 running_loss = 0
                 pass
-
+            
         print('epoch {} finished, cost {:.3f} sec'.format(epoch, time.time() - start_time))
         print('=======================\n\n\n')
 
