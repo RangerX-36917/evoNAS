@@ -13,51 +13,53 @@ from cnn.cell_elem import *
 
 
 class CNN(nn.Module):
-    def __init__(self, cell_config_list: dict, class_num: int, N: int = 2):
+    def __init__(self, cell_config_list: dict, class_num: int, image_size=32,N: int = 2):
         super(CNN, self).__init__()
         '''
             used for calc freature_map_num
             branch_num: the amount of nodes pointing to output-node
         '''
         normal_cell_conf = cell_config_list['normal_cell']
-        _output_node_idx = len(normal_cell_conf) + 1
-        branch_num = len(normal_cell_conf[_output_node_idx])
-        # print('branch num:', branch_num)
 
         self.class_num = class_num
 
+        _size=image_size
+
         # TODO: use parameter representation (current only suitable for image with 3 channels)
         channel1 = 32
-        self.normal_layer1 = ResBlock(normal_cell_conf, N, channels=channel1, in_channels=3)
+        self.normal_layer1 = ResBlock(normal_cell_conf, N, conv_channels=channel1, in_channels=3)
         self.reduction_layer1 = nn.MaxPool2d(kernel_size=2)
-        feature_map_num1 = channel1 * branch_num
+        _size//=2
 
         channel2 = 64
-        self.normal_layer2 = ResBlock(normal_cell_conf, N, channels=channel2, in_channels=channel1)
+        self.normal_layer2 = ResBlock(normal_cell_conf, N, conv_channels=channel2, in_channels=channel1)
         self.reduction_layer2 = nn.MaxPool2d(kernel_size=2)
-        feature_map_num2 = channel2 * branch_num
+        _size //= 2
 
         channel3 = 128
-        self.normal_layer3 = ResBlock(normal_cell_conf, N, channels=channel3, in_channels=channel2)
+        self.normal_layer3 = ResBlock(normal_cell_conf, N, conv_channels=channel3, in_channels=channel2)
 
-        feature_map_num3 = channel3 * branch_num
+        channel4 = 512
+        self.conv1x1 = choose_conv_elem(4, in_channels=channel3, out_channels=channel4)
 
-        # TODO: use parameter representation (current only suitable for 32*32 image)
-        self.gap_layer = nn.AvgPool2d(kernel_size=8)
 
-        self.fc1 = nn.Linear(in_features=channel3, out_features=100)
+        print(_size)
+        self.gap_layer = nn.AvgPool2d(kernel_size=int(_size))
+
+        self.fc1 = nn.Linear(in_features=channel4, out_features=100)
         self.fc2 = nn.Linear(in_features=100, out_features=class_num)
         self.softmax_layer = nn.Softmax(dim=1)
 
     def forward(self, x: torch.Tensor):
         # input(28,28)
         cnn_part = nn.Sequential(
-            self.normal_layer1,  # -> (32,32,#)
+            self.normal_layer1,  # -> (32,32,32)
             self.reduction_layer1,
-            self.normal_layer2,  # -> (16,16,#)
+            self.normal_layer2,  # -> (64,16,16)
             self.reduction_layer2,
-            self.normal_layer3,  # -> (8,8,#)
-            self.gap_layer,  # -> (1,1,#)
+            self.normal_layer3,  # -> (128,8,8)
+            self.conv1x1,  # -> (512,8,8)
+            self.gap_layer,  # -> (512,1,1)
         )
 
         softmax_part = nn.Sequential(
@@ -67,39 +69,46 @@ class CNN(nn.Module):
         )
 
         x = cnn_part(x)
-        x=x.view(x.size(0),-1)
-        x=softmax_part(x)
+        x = x.view(x.size(0), -1)
+        x = softmax_part(x)
         return x
 
 
 class ResBlock(nn.Module):
-    def __init__(self, config_list: dict, N: int, channels: int, in_channels: int):
+    def __init__(self, config_list: dict, N: int, conv_channels: int, in_channels: int):
         super(ResBlock, self).__init__()
         # _output_node_idx = len(config_list) + 1
         # intern_in_channels = len(config_list[_output_node_idx]) * channels
 
         self.normal_cells = []
+        prev_cell = None
         for i in range(N):
             if i == 0:
-                cell = Cell(config_list, in_channels, channels)
+                cell = Cell(config_list,
+                            in_channels=in_channels,
+                            in_skip_channels=in_channels,
+                            conv_channels=conv_channels)
             else:
-                cell = Cell(config_list, channels, channels)
+                cell = Cell(config_list,
+                            in_channels=prev_cell.out_channels,
+                            in_skip_channels=prev_cell.in_channels,
+                            conv_channels=conv_channels)
+
             self.normal_cells.append(cell)
             self.add_module('cell{}'.format(i), cell)
+            prev_cell = cell
 
-        # self.add_module()
         self.normal_cells_num = N
-
-        self.skip_remap_conv = choose_conv_elem(1, in_channels=in_channels, out_channels=channels)
 
     def forward(self, x):
         # cell stack model
-        x_skip = self.skip_remap_conv(x)
+        x_skip = x
+
+        # note: cell(x_in, x_skip)
         for i in range(self.normal_cells_num):
             if i == 0:
                 x = self.normal_cells[i](x, x)
             else:
-                # print("=======")
                 x_tmp = x
                 x = self.normal_cells[i](x, x_skip)
                 x_skip = x_tmp
@@ -108,48 +117,59 @@ class ResBlock(nn.Module):
 
 
 class Cell(nn.Module):
-    def __init__(self, config_list: dict, in_channels: int, conv_channels: int, output_cell=False):
+    def __init__(self, config_list: dict, in_channels: int, in_skip_channels: int, conv_channels: int,
+                 output_cell_flag=False):
         super(Cell, self).__init__()
+
+        self.in_channels = in_channels
         self.output_node_idx = len(config_list) + 1
-        self.output_cell = output_cell
-        self.config_list = {}
+        self.output_cell_flag = output_cell_flag
+        self.convs = {}  # store conv operations
 
-        # decode the raw cell config list
-        for dstnode, srclist in config_list.items():
-            self.config_list[dstnode] = []
-            for srcnode, opt in srclist:
+        # decode the raw cell config list and build the cell
+        self.node_channels = {0: in_skip_channels, 1: in_channels}
+
+        for dstnode in range(2, self.output_node_idx + 1):
+            self.convs[dstnode] = []
+            self.node_channels[dstnode] = 0
+            # build net from # to dstnode
+            for srcnode, opt in config_list[dstnode]:
                 if opt >= 1 and opt <= 7:
-                    if srcnode == 0 or srcnode == 1:
-                        conv = choose_conv_elem(opt, in_channels, conv_channels)
-                        self.config_list[dstnode].append((srcnode, conv))
-                    else:
-                        conv = choose_conv_elem(opt, conv_channels * len(config_list[srcnode]), conv_channels)
-                        self.config_list[dstnode].append((srcnode, conv))
-
+                    # note: srcnode < dstnode => self.node_channels[srcnode] has been calculated
+                    conv = choose_conv_elem(opt, self.node_channels[srcnode], conv_channels)
+                    self.convs[dstnode].append((srcnode, conv))
                     self.add_module("conv_{}to{}".format(srcnode, dstnode), conv)
                     # print("conv_{}to{}".format(srcnode,dstnode),conv)
 
-        if (not self.output_cell):
-            self.output_conv = choose_conv_elem(1, conv_channels * len(config_list[self.output_node_idx]),
-                                                conv_channels)
+                    # update self.node_channels
+                    if opt in (1, 2, 3):
+                        # note: identity & pooling keep the original channel num
+                        self.node_channels[dstnode] += self.node_channels[srcnode]
+                    else:
+                        self.node_channels[dstnode] += conv_channels
 
-    def forward(self, x_prev, x_skip):
+        if (not self.output_cell_flag):
+            # use 1x1 conv
+            self.output_conv = choose_conv_elem(4, self.node_channels[self.output_node_idx], conv_channels)
+            self.out_channels = conv_channels
+        else:
+            self.out_channels = self.node_channels[self.output_node_idx]
+
+    def forward(self, x_in, x_skip):
         # print(x_prev.shape)
         # print(x_skip.shape)
-        hidden_state = [None for _ in range(self.output_node_idx+1)]
-        hidden_state[0]=x_skip
-        hidden_state[1]=x_prev
+        hidden_state = [None for _ in range(self.output_node_idx + 1)]
+        hidden_state[0] = x_skip
+        hidden_state[1] = x_in
         for i in range(2, self.output_node_idx + 1):
             data = []
-            if(len(self.config_list[i])>0):
-                for srcnode, conv in self.config_list[i]:
+            if (len(self.convs[i]) > 0):  # check whether this node is used or not
+                for srcnode, conv in self.convs[i]:
                     data.append(conv(hidden_state[srcnode]))
 
-            if(len(data)>0):
-                hidden_state[i]=torch.cat(data, 1)
+                hidden_state[i] = torch.cat(data, 1)
 
-
-        if (not self.output_cell):
+        if (not self.output_cell_flag):
             x = self.output_conv(hidden_state[self.output_node_idx])
         else:
             x = hidden_state[self.output_node_idx]
@@ -160,14 +180,12 @@ class Cell(nn.Module):
 def choose_conv_elem(opt: int, in_channels=None, out_channels=None):
     conv = None
 
-    # TODO：for pooling layer don't use 1x1 conv to remap fisrt. => calculate right in_channel
-    if (opt == 1):  # identity -> # 1x1 convolution
-        # conv = nn.Identity()
-        conv = BasicConv2d(in_channels, out_channels, kernel_size=1)
+    if (opt == 1):  # identity
+        conv = nn.Identity()
     if (opt == 2):  # 3x3 average pooling
-        conv = BasicPolling2d(in_channels,out_channels,kernel_size=3,type='avg')
+        conv = BasicPolling2d(in_channels, kernel_size=3, type='avg')
     if (opt == 3):  # 3x3 max pooling
-        conv = BasicPolling2d(in_channels,out_channels,kernel_size=3,type='max')
+        conv = BasicPolling2d(in_channels, kernel_size=3, type='max')
     if (opt == 4):  # 1x1 convolution
         conv = BasicConv2d(in_channels, out_channels, kernel_size=1)
     if (opt == 5):  # 3x3 depthwise-separable conv

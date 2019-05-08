@@ -399,3 +399,5 @@ report/proposal.pdf
 
 **/dataset/
 .vscode/settings.json
+
+\.DS_Store
