@@ -26,7 +26,7 @@
   
   \begin{document}
   
-  \title{Evolutionary Neural Architecture Search for Image Classification \\ Mid-term Report}
+  \title{Elite Parent Preserving Evolutionary Neural Architecture Search for Image Classification \\ Mid-term Report}
   
   \author{\IEEEauthorblockN{Bowen Zheng, Shijie Chen, Shuxin Wang}
   \IEEEauthorblockA{Department of Computer Science and Engineering\\
@@ -131,7 +131,7 @@
   \begin{figure}[H]
  	\centering
  	\includegraphics[width=0.4\textwidth]{figures/overallStruct.png}
-   \caption{The simplified overall artitecture of the total network. LEFT: outer structure. MIDDLE: detailed structure of normal cell stack. RIGHT: Structure between the last cell and Softmax layer}\label{fig:digit}
+   \caption{The simplified overall artitecture of the total network. LEFT: outer structure. MIDDLE: detailed structure of normal cell stack. RIGHT: Detailed structure of the Softmax unit}\label{fig:digit}
    \label{total_artc}
   \end{figure}
 
@@ -142,12 +142,9 @@
   To accelerate the evolution process, we need to find a way to estimate the performance of a generated neural architecture. We use a early-stop strategy which train the neural network with a small \emph{epoch} value. This approach can noticebly cut the training time of a network and at the same time provides a relatively reliable performance comparison metric.
 
   \subsection{Evolutionary Algorithm Framework}
-  For now, we follow the design of a cell based evolutionary NAS algorithm described in\cite{DBLP:journals/corr/abs-1802-01548} except that we propose a population update policy to preserve good parents. 
-
-  Our evolutionary algorithm features a elite parent preserving strategy in which the lifetime of the parent whose child has a high accuracy rank within the total population is extended. In this way, we hope to preserve good genes in the population and produce more high quality offsprings.
-
+  
   \begin{algorithm}[H]  
-    \caption{ Elite Parent Preserving Evolution:}
+    \caption{ Elite Parent Preserving Evolution}
     \begin{algorithmic}[1]  
   
     \State $population\gets \phi$
@@ -185,6 +182,8 @@
  
   \end{algorithmic}  
   \end{algorithm}  
+  For now, we follow the design of a cell based evolutionary NAS algorithm described in\cite{DBLP:journals/corr/abs-1802-01548} except that we propose a population update policy to preserve good parents. 
+  Our evolutionary algorithm features a elite parent preserving strategy in which the lifetime of the parent whose child has a high accuracy rank within the total population is extended. In this way, we hope to preserve good genes in the population and produce more high quality offsprings.
 
 The $population$ size is $N$ and the algorithm evolve $G$ generations in total. $entireGen$ stores all network models that we generated. $P$ and $t$ are hyper-parameters controlling the actual lifespan of an individual.
      
@@ -234,10 +233,10 @@ A edge is legal if its origin is a input or previous layer of the destination hi
 	\end{algorithmic}  
 \end{algorithm}  
 
-  When sampling the parent individual, we randomly take $x$ individuals from the population and pick the one with highest estimated accuracy. The mutation operation includes adding, deleting and altering an edge(NN unit). At the same time, the result model must be valid and conform with our representation definition. Currently mutation operations are stochastic. A better heuristic approach can be used to improve performance.
+  When sampling the parent individual, we randomly take $X$ individuals from the population and pick the one with highest estimated accuracy. The mutation operation includes adding, deleting and altering an edge(NN unit). At the same time, the result model must be valid and conform with our representation definition. Currently mutation operations are stochastic. A better heuristic approach can be used to improve performance.
 
  \begin{algorithm}[H]  
-	\caption{ Mutation Operation:}
+	\caption{ Mutation Operation}
  
 
 	\begin{algorithmic}[1]  
@@ -256,23 +255,62 @@ A edge is legal if its origin is a input or previous layer of the destination hi
 
  \section{Experiments}
 
+ \subsection{specification}
+ The followings are the parameters used in our experiment during search process.
+ \begin{enumerate}
+  \item Population Size $N$ = 10
+  \item Sample Size $X$ = 5
+  \item Total Generations: 30
+  \item Batch Size: 100
+  \item Learning Rate: 0.001
+  \item Epoch: 10
+ \end{enumerate}
 
- \section{Future Work}  
-   
+ \subsection{Result}
+
+ Fig.\ref{found_artc} shows the best model our algorithm found. Table\ref{table:1} shows the performance comparison of the searched model and other models.
+
+\begin{figure}[H]
+ 	\centering
+ 	\includegraphics[width=0.4\textwidth]{figures/cellStruct.png}
+   \caption{The simplified overall artitecture of the total network. LEFT: outer structure. MIDDLE: detailed structure of normal cell stack. RIGHT: Structure between the last cell and Softmax layer}\label{fig:digit}
+   \label{found_artc}
+  \end{figure}
+
   \begin{table}[H]
     
     \centering
       \begin{tabular}{cccc}
       \toprule
-      Variable&Name\\
+      Model&Accuracy\\
       \midrule
-     
-      $N_{total}$&size of the total population\\
+      $Searched  Model$&70.00\%\\
+      $VGG\_Net$&90.00\%\\
   \bottomrule
   \end{tabular}
-  \caption{Notation}
+  \caption{Performance comparison between the searched model and other hand-crafted models.}
   \label{table:1}
   \end{table}
+
+
+
+ \section{Future Work}  
+
+ We have already defined the representation of neural architectures and have implemented the evolutionary search algorithm. The followings are the improvements we are going to make for finishing this project.
+ 
+  
+  \subsubsection{Weight Sharing of Neural Networks}    
+  One major cost in NAS is the training of neural networks. Offspring networks are generated through mutation operation and share a lot of structures with their parents. Therefore, we can let theoffspring inherit the weights of its parent. This will cut the training time cost significantly compared to training a neural network from scratch.
+  
+  \subsubsection{Heuristic Mutation Operation}
+  Currently, the mutation operation is stochastic. Experiments show that such random mutation operation has very limited search ability. We can try to design a heuristic mutation operation based on knowledge in neural network architectures and possibly graph theory.
+  
+  \subsubsection{More Efficient Performance Estimation}
+  A better performance estimation approach is needed to accelerate the search process. We may try some approaches that require little trainning.
+  
+  \subsubsection{Find Proper Size of a Cell}
+  The training cost is highly related to the amount of parameters in a neural network. We should find a way to set a proper size (number of hidden states) for the cell. This will help to find a good neural network architecture without enlarge the search space too much.
+   
 
 \bibliographystyle{ieeetr}
 \bibliography{ref}
