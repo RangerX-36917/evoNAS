@@ -46,12 +46,12 @@
 
       Neural architecture search is a research field focusing on automating the design of neural networks. Currently there are a few popular approaches, including reinforcement learning, bayesian optimization, tree-based searching and genetic-based evolutionary algorithms. 
 
-      This project focuses on NAS for image classification problems. The reason is that this area is well explored and there exists many high-performance hand-crafted neural architectures. They provide a good guidance and target to our project. In addition, neural networks for image classification are mostly built upon basic cells including convolution, polling, normalization, and activation layers. This helps to shrink our search space.
+      This project focuses on NAS for image classification problems. The reason is that this area is well explored and there exists many high-performance hand-crafted neural architectures. They provide a good guidance and target to our project. In addition, neural networks for image classification are mostly built upon basic units including convolution, polling, normalization, and activation layers. This helps to shrink our search space.
     
 
 
     \section{Related Works}
-    A lot of research works have been done in each of the three categories in NAS. Some proposed algorithms can design architectures that is on par of or even more capable than state-of-the-art hand-crafted networks.
+    A lot of research works have been done on NAS. Some researchers have proposed algorithms that can design architectures with performance on par of or even better than state-of-the-art hand-crafted neural networks. Research topics in NAS are divided into three categories: search space, search strategy and performance estimation stratety.
     
     \subsection{Search Space}
     
@@ -116,30 +116,37 @@
 
   \subsubsection{Cell Architecture Representation}
 
-  We represent the architecture of a cell by a vector $R$ which is a vector of lists of tuple $R_{i} = (a_i, b_i)$ where $a_i$ marks the input state of state $i$ and $b_i$ shows the unit used in the state transition connection.
+  We represent the architecture of a cell by a vector $R$ which is a vector of lists of tuple $R_{i} = \{(a_{i1}, b_{i1}), (a_{i2}, b_{i2}), ...\}$ where $a_i$ marks the input state of state $i$ and $b_i$ shows the unit used in the state transition connection.
 
   \begin{figure}[H]
  	\centering
- 	\includegraphics[width=0.4\textwidth]{figures/architecture.png}
-   \caption{The artitecture of a cell}\label{fig:digit}
+ 	\includegraphics[width=0.4\textwidth]{figures/cellStruct.png}
+   \caption{An example artitecture of a cell with representation $R=\{\{\},\{\},\{(0,3)\},\{(2,7),(1,7)\},\{(1,1),(3,5)\}\}$.}\label{fig:digit}
    \label{f_artc}
   \end{figure}
 
   \subsection{Overall Neural Network Architecture}
-  As is illustrated in Fig.\ref{total_artc} overall network consists of input layer, 6 identical cells, 3 polling layers, 2 fully connected perceptron layers, a softmax layer and an output layer. 
+  As is illustrated in Fig.\ref{total_artc} overall network consists of input layer, 6 ($N = 2$) identical cells, 3 polling layers, 1 global average polling(GAP) layer, 2 fully connected(FC) perceptron layers and 1 softmax layer. 
 
   \begin{figure}[H]
  	\centering
- 	\includegraphics[width=0.4\textwidth]{figures/architecture.png}
-   \caption{The overall artitecture of the total network. LEFT: outer structure. RIGHT: detailed skip connection of cells.}\label{fig:digit}
+ 	\includegraphics[width=0.4\textwidth]{figures/overallStruct.png}
+   \caption{The simplified overall artitecture of the total network. LEFT: outer structure. MIDDLE: detailed structure of normal cell stack. RIGHT: Structure between the last cell and Softmax layer}\label{fig:digit}
    \label{total_artc}
   \end{figure}
 
   For simplicity, all cells are the same. 
-  \subsection{Evolutionary Algorithm Framework}
-  For now, we follow the design of a cell based evolutionary NAS algorithm described in\cite{DBLP:journals/corr/abs-1802-01548} except that we propose a population update policy to preserve good parents. We will further examine initilization, crossover and mutation strategies to optimize our algorithm. We will also compare different performance estimation approaches to cut computation demand.
 
-  \begin{algorithm}[htb]  
+  \subsection{Early Stop Performance Estimation}
+
+  To accelerate the evolution process, we need to find a way to estimate the performance of a generated neural architecture. We use a early-stop strategy which train the neural network with a small \emph{epoch} value. This approach can noticebly cut the training time of a network and at the same time provides a relatively reliable performance comparison metric.
+
+  \subsection{Evolutionary Algorithm Framework}
+  For now, we follow the design of a cell based evolutionary NAS algorithm described in\cite{DBLP:journals/corr/abs-1802-01548} except that we propose a population update policy to preserve good parents. 
+
+  Our evolutionary algorithm features a elite parent preserving strategy in which the lifetime of the parent whose child has a high accuracy rank within the total population is extended. In this way, we hope to preserve good genes in the population and produce more high quality offsprings.
+
+  \begin{algorithm}[H]  
     \caption{ Elite Parent Preserving Evolution:}
     \begin{algorithmic}[1]  
   
@@ -179,17 +186,60 @@
   \end{algorithmic}  
   \end{algorithm}  
 
-The $population$ size is $N$ and the algorithm evolve $G$ generations in total. $entireGen$ stores all network models that we generated. 
+The $population$ size is $N$ and the algorithm evolve $G$ generations in total. $entireGen$ stores all network models that we generated. $P$ and $t$ are hyper-parameters controlling the actual lifespan of an individual.
      
-In $networkInit()$, the initial network model is generated. Then its $age $ is set to 1 and $lifetime$ is set to the default value. 
+In $networkInit()$, $N$ initial network models are generated. Then their $age $ are set to 1 and their $lifetime$ are set to the default value. 
 
-$P$ and $t$ are hyper-parameters controlling the actual lifespan of an individual.
+ \begin{algorithm}[H]  
+	\caption{ Network Initialization}
+	
+	
+	\begin{algorithmic}[1]  
+		\Ensure A randomly generated network architecture $arch$.
+		
+		\For  {every hidden layer $l$} 
+		\For {every input layers and hidden layers before $l'$}
+		\State Add a edge from $l'$ to $l$ with a probability $p$, and randomly choose an operation for this edge.
+		\EndFor
 
+		\If{in-degree of $l>$0}
+				\State  Add a legal edge to $l$ with a random operation if in-degree of $l$ is 0.
+		\EndIf
 
+		\EndFor
+		
+		\State Add edges from layers with 0 out-degree to the output layer.
+		\\
+		\Return The $arch$ generated.
+		
+	\end{algorithmic}  
+\end{algorithm}  
 
+  When sampling the parent individual, we randomly take $x$ individuals from the population and pick the one with highest estimated accuracy. The mutation operation includes adding, deleting and altering an edge(NN unit). At the same time, the result model must be valid and conform with our representation definition. Currently mutation operations are stochastic. A better heuristic approach can be used to improve performance.
 
-\section{--Proposed Framework}
+ \begin{algorithm}[H]  
+	\caption{ Mutation Operation:}
  
+
+	\begin{algorithmic}[1]  
+	\Require A network architecture $arch$
+	\Ensure The $arch$ with a mutation
+	
+	
+		\State Randomly pick a mutate position between two hidden layer.
+		\While {$arch$ is unchanged or $arch$ is illegal}
+		\State Apply mutation to the chosen position. 
+		\EndWhile
+		\State Add edges from layers with 0 out-degree to the output layer.
+		
+	\end{algorithmic}  
+\end{algorithm}  
+
+ \section{Experiments}
+
+
+ \section{Future Work}  
+   
   \begin{table}[H]
     
     \centering
@@ -204,126 +254,6 @@ $P$ and $t$ are hyper-parameters controlling the actual lifespan of an individua
   \caption{Notation}
   \label{table:1}
   \end{table}
-
-  \subsection{Fuzzy Rules}
-  
-  \begin{figure}[H]
- 	\centering
- 	\includegraphics[width=0.4\textwidth]{figures/u1.png}
-   \caption{The $don't care$ function}\label{fig:digit}
-   \label{u0}
- \end{figure}
- \begin{figure}[H]
- 	\centering
- 	\includegraphics[width=0.4\textwidth]{figures/u4.png}
-   \caption{Membership Functions with 4 intervals}\label{fig:digit}
-   \label{u3}
- \end{figure}
-  The antecedent part of $R_q$ is a set of antecedent fuzzy sets:
-\begin{equation}A_q = \{A_{qi}|i = 1,2,...,n\}\end{equation}
-
-   
-  \section{Asynchronous Parallel Distributed System Design}
-  
-  \begin{figure}[H]
-    \centering
-    \includegraphics[width = 0.4\textwidth]{figures/master.png}
-    \caption{The master process}
-    \label{fig:master}
-  \end{figure}
-
-  \begin{figure}[H]
-    \centering
-    \includegraphics[width = 0.4\textwidth]{figures/slave.png}
-    \caption{The slave process}
-    \label{fig:slave}
-  \end{figure}
-  
-  \subsection{Master and Slave process}
-  \subsubsection{Master Process}
-  
-  \subsubsection{Slave Processes}\mbox{}
-  
-	\subsection{Dataset Distributor:}
-	
-  \subsection{Population Migration Control:}
-  
-	
-  \subsection{Asynchronous Population Migration}
-  
-  
-  \section{Experiments}
-
-  \subsection{Pareto Front}
-  \subsubsection{With different cores}
-As is shown by Fig.\ref{diffCoreTr} and Fig.\ref{diffCoreT} ($I_{update} = 100, N_{total} = 264$), our model is able to get results that is similar to non-parallel models. Note that with the increase of the number of cores, the ability of the model to obtain classifiers with more rules and antecedent fuzzy sets is decreasing, due to the decrease of sub-population. It's acceptable since our objective is to minimize the two objectives.
-  \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.38\textwidth]{figures/diffCoreTrain.png}
-    \caption{Pareto Front on training data}\label{diffCoreTr}
-  \end{figure}
-  \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.38\textwidth]{figures/diffCoreTest.png}
-    \caption{Pareto Front on test data}\label{diffCoreT}
-  \end{figure}
-  
-  
-  
-  \subsubsection{With different exchange interval}
-  We can see from Fig.\ref{diffGenTr}, Fig.\ref{diffGenT} and Fig.\ref{diffTimeGen} ($N_{total} = 264, N_{island} = 8$) that the choice of exchange interval also impacts the performance of our model. A longer exchange interval leads to less communication between master and slave processes, thus reduces running time. 
-  \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.4\textwidth]{figures/diffGenTrain.png}
-    \caption{Pareto Front on training data with different $I_{update}$}\label{diffGenTr}
-  \end{figure}
-  \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.4\textwidth]{figures/diffGenTest.png}
-    \caption{Pareto Front on training data with different $I_{update}$}\label{diffGenT}
-  \end{figure}
-
-  \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.4\textwidth]{figures/diffTimeGen.png}
-    \caption{Computational time with different $I_{update}$}\label{diffTimeGen}
-  \end{figure}
-
-
-
-\subsection{Computation Time}
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.4\textwidth]{figures/diffTime.png}
-  \caption{Computation time of 3000 generations, $N_{pop}$ = 264.}\label{phT}
-\end{figure}
-With $n$ cores, we observe a speed up of up to $n^2$ times in our computational experiments.
-
-\subsection{Compare with other model}
-We compared our model with the synchronized model by Nojima et al.\cite{nojima2015application}, as is shown in Fig.\ref{diffModelTr}, Fig.\ref{diffModelTest} and Fig.\ref{diffModelTime}. The experiments are done using 8 cores.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.4\textwidth]{figures/diffModelTrain.png}
-  \caption{Comparison on training data.}\label{diffModelTr}
-\end{figure}
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.4\textwidth]{figures/diffModelTest.png}
-  \caption{Comparison on test data.}\label{diffModelTest}
-\end{figure}
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.4\textwidth]{figures/diffModelTime.png}
-  \caption{Comparison on total time.}\label{diffModelTime}
-\end{figure}
-
-
- \section{Conclusion}
- 
-  \section{Contribution}
-  
-   
 
 \bibliographystyle{ieeetr}
 \bibliography{ref}
