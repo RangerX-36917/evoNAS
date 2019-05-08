@@ -393,5 +393,9 @@ dmypy.json
 # End of https://www.gitignore.io/api/python
 
 .idea
+.ipynb_checkpoints
+report/proposal.pdf
+report/proposal.pdf
 
 **/dataset/
+.vscode/settings.json

@@ -14,6 +14,9 @@
  \usepackage{enumerate}
  \usepackage{subcaption}
  \usepackage[shortlabels]{enumitem}
+ \renewcommand{\algorithmicrequire}{\textbf{Input:}}  % Use Input in the format of Algorithm  
+ \renewcommand{\algorithmicensure}{\textbf{Output:}} % Use Output in the format of Algorithm  
+ 
 
 \begin{document}
 	\begin{center}
@@ -139,7 +142,7 @@
       
       \ForAll {$individual$ in $population$}
         \State update the $age$ of $individual$
-        \State remove current $individual$ if its age reaches its $lifetime$
+        \State remove current $individual$ if its $age$ reaches its $lifetime$
       \EndFor
       
       
@@ -152,14 +155,66 @@
   \end{algorithmic}  
   \end{algorithm}  
 
+The $population$ size is $N$ and the algorithm evolve $G$ generations in total. $entireGen$ stores all network models that we generated. A
 
-\end{normalsize}
-
-The $population$ size is $N$ and the algorithm evolve $G$ generations in total. $entireGen$ stores all network models that we generated. 
-     
 In $networkInit()$, the initial network model is generated. Then its $age $ is set to 1 and $lifetime$ is set to the default value. 
 
 $P$ and $t$ are hyper-parameters controlling the actual lifespan of an individual.
+
+
+ \begin{algorithm}[H]  
+	\caption{ networkInit:}
+	
+	webview-panel:webview-panel/webview-0
+	\begin{algorithmic}[1]  
+		\Ensure A randomly generated network.
+    \State $network\gets $ new $Network$
+    \State $network.age\gets1$
+    \State $network.life\gets $DEFALT\_LIFE 
+		\For  {every hidden layer $l$} 
+		\For {every input layers and hidden layers before $l'$}
+		\State Add a edge from $l'$ to $l$ with a probability $p$, and randomly choose an operation for this edge.
+		\EndFor
+
+		\If{in-degree of $l>$0}
+				\State  Add a legal edge to $l$ with a random operation if in-degree of $l$ is 0.
+		\EndIf
+
+		\EndFor
+		
+		\State Add edges from layers with 0 out-degree to the output layer.
+		\\
+		\Return The $arch$ generated.
+		
+	\end{algorithmic}  
+\end{algorithm}  
+
+
+
+
+ \begin{algorithm}[H]  
+	\caption{ Mutation\_operation:}
+ 
+
+	\begin{algorithmic}[1]  
+	\Require A network architecture $arch$
+	\Ensure The $arch$ with a mutation
+	
+	
+		\State Randomly pick a mutate position between two hidden layer.
+		\While {$arch$ is unchanged or $arch$ is illegal}
+		\State Do mutation at the chosen position. The mutation can be deleting or adding a new edge with an operation, and can also be changing operation of the edge.
+		\EndWhile
+		\State Add edges from layers with 0 out-degree to the output layer.
+		
+	\end{algorithmic}  
+\end{algorithm}  
+
+
+
+
+\end{normalsize}
+
 
 
 
