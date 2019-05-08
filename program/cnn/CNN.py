@@ -43,7 +43,7 @@ class CNN(nn.Module):
         self.conv1x1 = choose_conv_elem(4, in_channels=channel3, out_channels=channel4)
 
 
-        print(_size)
+        # print(_size)
         self.gap_layer = nn.AvgPool2d(kernel_size=int(_size))
 
         self.fc1 = nn.Linear(in_features=channel4, out_features=100)
@@ -71,6 +71,7 @@ class CNN(nn.Module):
         x = cnn_part(x)
         x = x.view(x.size(0), -1)
         x = softmax_part(x)
+        # print('+++++++++++++++++++')
         return x
 
 
@@ -112,6 +113,7 @@ class ResBlock(nn.Module):
                 x_tmp = x
                 x = self.normal_cells[i](x, x_skip)
                 x_skip = x_tmp
+            # print('===============')
 
         return x
 
@@ -156,7 +158,7 @@ class Cell(nn.Module):
             self.out_channels = self.node_channels[self.output_node_idx]
 
     def forward(self, x_in, x_skip):
-        # print(x_prev.shape)
+        # print(x_in.shape)
         # print(x_skip.shape)
         hidden_state = [None for _ in range(self.output_node_idx + 1)]
         hidden_state[0] = x_skip
