@@ -25,16 +25,16 @@ sns.set_style('white')
 #     xvalues, yvalues, marker='.', facecolor=(0.0, 0.0, 0.0),
 #     edgecolor='r', linewidth=1, s=1)
 # try:
-history = NewAgingEvolution.NAS_evolution(cycles=10000, population_size=500, sample_size=50)
-# except:
-#     pass
+history = NewAgingEvolution.NAS_evolution(cycles=10, population_size=10, sample_size=2)
+# except Exception, e:
+    # print(e.message)
 
 det_str = pickle.dumps(history)
 
-#将数据序列化后存储到文件中
-f = open('history','wb')   #pickle只能以二进制格式存储数据到文件
+
+f = open('history','wb')  
 data = {'k1':'python','k2':'java'}
-f.write(pickle.dumps(data))   #dumps序列化源数据后写入文件
+f.write(pickle.dumps(data))  
 f.close()
 
 xvalues = range(len(history))

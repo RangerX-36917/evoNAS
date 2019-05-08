@@ -1,5 +1,5 @@
 from cnn.CNN import CNN, ResBlock, Cell, choose_conv_elem
-from program.cnn.cell_elem import SeparableConv2dx2
+from cnn.cell_elem import SeparableConv2dx2
 
 from torchsummary import summary
 import torch.nn as nn

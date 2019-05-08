@@ -2,7 +2,7 @@ import torch
 
 import torch.nn as nn
 
-from program.cnn.cell_elem import *
+from cnn.cell_elem import *
 
 '''
     cell config description
