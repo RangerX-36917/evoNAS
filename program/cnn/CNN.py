@@ -136,13 +136,18 @@ class Cell(nn.Module):
     def forward(self, x_prev, x_skip):
         # print(x_prev.shape)
         # print(x_skip.shape)
-        hidden_state = [x_skip, x_prev]
+        hidden_state = [None for _ in range(self.output_node_idx+1)]
+        hidden_state[0]=x_skip
+        hidden_state[1]=x_prev
         for i in range(2, self.output_node_idx + 1):
             data = []
-            for srcnode, conv in self.config_list[i]:
-                data.append(conv(hidden_state[srcnode]))
+            if(len(self.config_list[i])>0):
+                for srcnode, conv in self.config_list[i]:
+                    data.append(conv(hidden_state[srcnode]))
 
-            hidden_state.append(torch.cat(data, 1))
+            if(len(data)>0):
+                hidden_state[i]=torch.cat(data, 1)
+
 
         if (not self.output_cell):
             x = self.output_conv(hidden_state[self.output_node_idx])
