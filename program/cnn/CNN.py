@@ -2,7 +2,7 @@ import torch
 
 import torch.nn as nn
 
-from program.cnn.cell_elem import BasicConv2d, SeparableConv2dx2, DilatedConv2d
+from cnn.cell_elem import *
 
 '''
     cell config description
@@ -22,41 +22,41 @@ class CNN(nn.Module):
         normal_cell_conf = cell_config_list['normal_cell']
         _output_node_idx = len(normal_cell_conf) + 1
         branch_num = len(normal_cell_conf[_output_node_idx])
-        print('branch num:', branch_num)
+        # print('branch num:', branch_num)
 
         self.class_num = class_num
 
         # TODO: use parameter representation (current only suitable for image with 3 channels)
-        channel1 = 64
+        channel1 = 32
         self.normal_layer1 = ResBlock(normal_cell_conf, N, channels=channel1, in_channels=3)
         self.reduction_layer1 = nn.MaxPool2d(kernel_size=2)
         feature_map_num1 = channel1 * branch_num
 
-        channel2 = 256
+        channel2 = 64
         self.normal_layer2 = ResBlock(normal_cell_conf, N, channels=channel2, in_channels=channel1)
         self.reduction_layer2 = nn.MaxPool2d(kernel_size=2)
         feature_map_num2 = channel2 * branch_num
 
-        channel3 = 512
+        channel3 = 128
         self.normal_layer3 = ResBlock(normal_cell_conf, N, channels=channel3, in_channels=channel2)
 
         feature_map_num3 = channel3 * branch_num
 
-        # TODO: use parameter representation (current only suitable for 28*28 image)
-        self.gap_layer = nn.AvgPool2d(kernel_size=7)
+        # TODO: use parameter representation (current only suitable for 32*32 image)
+        self.gap_layer = nn.AvgPool2d(kernel_size=8)
 
         self.fc1 = nn.Linear(in_features=channel3, out_features=100)
         self.fc2 = nn.Linear(in_features=100, out_features=class_num)
-        self.softmax_layer = nn.Softmax()
+        self.softmax_layer = nn.Softmax(dim=1)
 
     def forward(self, x: torch.Tensor):
         # input(28,28)
         cnn_part = nn.Sequential(
-            self.normal_layer1,  # -> (28,28,#)
+            self.normal_layer1,  # -> (32,32,#)
             self.reduction_layer1,
-            self.normal_layer2,  # -> (14,14,#)
+            self.normal_layer2,  # -> (16,16,#)
             self.reduction_layer2,
-            self.normal_layer3,  # -> (7,7,#)
+            self.normal_layer3,  # -> (8,8,#)
             self.gap_layer,  # -> (1,1,#)
         )
 
@@ -99,7 +99,7 @@ class ResBlock(nn.Module):
             if i == 0:
                 x = self.normal_cells[i](x, x)
             else:
-                print("=======")
+                # print("=======")
                 x_tmp = x
                 x = self.normal_cells[i](x, x_skip)
                 x_skip = x_tmp
@@ -118,7 +118,7 @@ class Cell(nn.Module):
         for dstnode, srclist in config_list.items():
             self.config_list[dstnode] = []
             for srcnode, opt in srclist:
-                if opt >= 1 or opt <= 7:
+                if opt >= 1 and opt <= 7:
                     if srcnode == 0 or srcnode == 1:
                         conv = choose_conv_elem(opt, in_channels, conv_channels)
                         self.config_list[dstnode].append((srcnode, conv))
@@ -134,8 +134,8 @@ class Cell(nn.Module):
                                                 conv_channels)
 
     def forward(self, x_prev, x_skip):
-        print(x_prev.shape)
-        print(x_skip.shape)
+        # print(x_prev.shape)
+        # print(x_skip.shape)
         hidden_state = [x_skip, x_prev]
         for i in range(2, self.output_node_idx + 1):
             data = []
@@ -158,9 +158,9 @@ def choose_conv_elem(opt: int, in_channels=None, out_channels=None):
         # conv = nn.Identity()
         conv = BasicConv2d(in_channels, out_channels, kernel_size=1)
     if (opt == 2):  # 3x3 average pooling
-        conv = nn.AvgPool2d(kernel_size=3, stride=1, padding=1)
+        conv = BasicPolling2d(in_channels,out_channels,kernel_size=3,type='avg')
     if (opt == 3):  # 3x3 max pooling
-        conv = nn.MaxPool2d(kernel_size=3, stride=1, padding=1)
+        conv = BasicPolling2d(in_channels,out_channels,kernel_size=3,type='max')
     if (opt == 4):  # 1x1 convolution
         conv = BasicConv2d(in_channels, out_channels, kernel_size=1)
     if (opt == 5):  # 3x3 depthwise-separable conv

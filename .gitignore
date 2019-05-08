@@ -396,3 +396,6 @@ dmypy.json
 .ipynb_checkpoints
 report/proposal.pdf
 report/proposal.pdf
+
+**/dataset/
+.vscode/settings.json

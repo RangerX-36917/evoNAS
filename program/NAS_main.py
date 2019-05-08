@@ -8,7 +8,9 @@ import pickle
 
 # history = AgingEvolution.regularized_evolution(cycles=10000, population_size=10000, sample_size=50)
 sns.set_style('white')
-
+CYCLES = 100
+POPULATION_SIZE = 10
+SAMPLE_SIZE = 5
 # history = AgingEvolution.NAS_evolution(cycles=10000, population_size=500, sample_size=50)
 # xvalues = range(len(history))
 # yvalues = [i.accuracy for i in history]
@@ -24,17 +26,17 @@ sns.set_style('white')
 # ax.scatter(
 #     xvalues, yvalues, marker='.', facecolor=(0.0, 0.0, 0.0),
 #     edgecolor='r', linewidth=1, s=1)
-try:
-    history = NewAgingEvolution.NAS_evolution(cycles=10000, population_size=500, sample_size=50)
-except:
-    pass
+# try:
+history = NewAgingEvolution.NAS_evolution(cycles=CYCLES, population_size=POPULATION_SIZE, sample_size=SAMPLE_SIZE)
+# except Exception, e:
+    # print(e.message)
 
 det_str = pickle.dumps(history)
 
-#将数据序列化后存储到文件中
-f = open('history','wb')   #pickle只能以二进制格式存储数据到文件
+
+f = open('history','wb')  
 data = {'k1':'python','k2':'java'}
-f.write(pickle.dumps(data))   #dumps序列化源数据后写入文件
+f.write(pickle.dumps(data))  
 f.close()
 
 xvalues = range(len(history))
@@ -64,4 +66,4 @@ plt.ylabel('Accuracy', labelpad=-30, fontsize=16)
 plt.xlim(0, 10000)
 
 sns.despine()
-plt.show()
+#plt.show()

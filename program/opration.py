@@ -18,7 +18,7 @@ def random_architecture():
 
 def mutate_arch(parent_arch):
     """Computes the architecture for a child of the given parent architecture.
-  
+
     The parent architecture is cloned and mutated to produce the child
     architecture. The child architecture is mutated by flipping a randomly chosen
     bit in its bit-string.
@@ -38,6 +38,17 @@ def mutate_arch(parent_arch):
     return child_arch
 
 
+def cal_output_layer(arch):
+    arch[hidden_layer_num + 2] = []
+    for i in range(2, hidden_layer_num + 2):
+        arch[hidden_layer_num + 2].append((i, 1))
+    for i in range(2, hidden_layer_num + 2):
+
+        for j in range(2, i):
+            if arch[i][j][1] != 0:
+                arch[hidden_layer_num + 2][j - 2] = (j, 0)
+
+
 def random_NAS_architecture():
     """
 
@@ -48,12 +59,18 @@ def random_NAS_architecture():
         count = 0
         arch[i] = []
         for j in range(i):
-            rand_op = random.randint(0, max_op)
+            if random.random() < 0.2:
+                rand_op = random.randint(1, max_op)
+            else:
+                rand_op = 0
             count += rand_op
             arch[i].append((j, rand_op))
         if count == 0:
             sample = random.randint(0, i - 1)
             arch[i][sample] = (sample, random.randint(1, max_op))
+
+    cal_output_layer(arch)
+
     return arch
 
 
@@ -67,10 +84,14 @@ def NAS_mutate_arch(arch):
     for i in range(mutate_layer):
         if arch[mutate_layer][i][1] > 0:
             count += 1
-    op_mutated = (arch[mutate_layer][mutate_position][1] + random.randint(1, max_op)) % (max_op + 1)
+    op_mutated = (arch[mutate_layer][mutate_position][1] +
+                  random.randint(1, max_op)) % (max_op + 1)
     if count == 1 and arch[mutate_layer][mutate_position][1] > 0 and op_mutated == 0:
         op_mutated = random.randint(1, max_op)
     arch[mutate_layer][mutate_position] = (mutate_position, op_mutated)
+
+    cal_output_layer(arch)
+
     return arch
 
 
