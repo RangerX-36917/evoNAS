@@ -142,7 +142,7 @@
       
       \ForAll {$individual$ in $population$}
         \State update the $age$ of $individual$
-        \State remove current $individual$ if its age reaches its $lifetime$
+        \State remove current $individual$ if its $age$ reaches its $lifetime$
       \EndFor
       
       
@@ -155,14 +155,22 @@
   \end{algorithmic}  
   \end{algorithm}  
 
+The $population$ size is $N$ and the algorithm evolve $G$ generations in total. $entireGen$ stores all network models that we generated. A
+
+In $networkInit()$, the initial network model is generated. Then its $age $ is set to 1 and $lifetime$ is set to the default value. 
+
+$P$ and $t$ are hyper-parameters controlling the actual lifespan of an individual.
+
 
  \begin{algorithm}[H]  
 	\caption{ networkInit:}
 	
-	
+	webview-panel:webview-panel/webview-0
 	\begin{algorithmic}[1]  
-		\Ensure A randomly generated network architecture $arch$.
-		
+		\Ensure A randomly generated network.
+    \State $network\gets $ new $Network$
+    \State $network.age\gets1$
+    \State $network.life\gets $DEFALT\_LIFE 
 		\For  {every hidden layer $l$} 
 		\For {every input layers and hidden layers before $l'$}
 		\State Add a edge from $l'$ to $l$ with a probability $p$, and randomly choose an operation for this edge.
@@ -207,11 +215,6 @@
 
 \end{normalsize}
 
-The $population$ size is $N$ and the algorithm evolve $G$ generations in total. $entireGen$ stores all network models that we generated. 
-     
-In $networkInit()$, the initial network model is generated. Then its $age $ is set to 1 and $lifetime$ is set to the default value. 
-
-$P$ and $t$ are hyper-parameters controlling the actual lifespan of an individual.
 
 
 
