@@ -1094,3 +1094,78 @@ epoch 0 finished, cost 303.555 sec
 
 
 
+epoch: 1, iter:49 loss:2.0261
+epoch: 1, iter:99 loss:2.0316
+epoch: 1, iter:149 loss:2.0371
+epoch: 1, iter:199 loss:2.0204
+epoch: 1, iter:249 loss:2.0250
+epoch: 1, iter:299 loss:2.0293
+epoch: 1, iter:349 loss:2.0145
+epoch: 1, iter:399 loss:1.9975
+epoch: 1, iter:449 loss:1.9885
+epoch: 1, iter:499 loss:1.9792
+epoch 1 finished, cost 302.831 sec
+=======================
+
+
+
+epoch: 2, iter:49 loss:1.9715
+epoch: 2, iter:99 loss:1.9739
+epoch: 2, iter:149 loss:1.9600
+epoch: 2, iter:199 loss:1.9558
+epoch: 2, iter:249 loss:1.9546
+epoch: 2, iter:299 loss:1.9438
+epoch: 2, iter:349 loss:1.9559
+epoch: 2, iter:399 loss:1.9449
+epoch: 2, iter:449 loss:1.9430
+epoch: 2, iter:499 loss:1.9332
+epoch 2 finished, cost 302.636 sec
+=======================
+
+
+
+epoch: 3, iter:49 loss:1.9377
+epoch: 3, iter:99 loss:1.9194
+epoch: 3, iter:149 loss:1.9214
+epoch: 3, iter:199 loss:1.9166
+epoch: 3, iter:249 loss:1.9116
+epoch: 3, iter:299 loss:1.9097
+epoch: 3, iter:349 loss:1.8930
+epoch: 3, iter:399 loss:1.8912
+epoch: 3, iter:449 loss:1.9028
+epoch: 3, iter:499 loss:1.8906
+epoch 3 finished, cost 304.145 sec
+=======================
+
+
+
+epoch: 4, iter:49 loss:1.8889
+epoch: 4, iter:99 loss:1.8748
+epoch: 4, iter:149 loss:1.8894
+epoch: 4, iter:199 loss:1.8799
+epoch: 4, iter:249 loss:1.8779
+epoch: 4, iter:299 loss:1.8754
+epoch: 4, iter:349 loss:1.8660
+epoch: 4, iter:399 loss:1.8769
+epoch: 4, iter:449 loss:1.8735
+epoch: 4, iter:499 loss:1.8770
+epoch 4 finished, cost 302.288 sec
+=======================
+
+
+
+epoch: 5, iter:49 loss:1.8651
+epoch: 5, iter:99 loss:1.8552
+epoch: 5, iter:149 loss:1.8500
+epoch: 5, iter:199 loss:1.8699
+epoch: 5, iter:249 loss:1.8478
+epoch: 5, iter:299 loss:1.8410
+epoch: 5, iter:349 loss:1.8469
+epoch: 5, iter:399 loss:1.8524
+epoch: 5, iter:449 loss:1.8504
+epoch: 5, iter:499 loss:1.8518
+epoch 5 finished, cost 303.724 sec
+=======================
+
+
+
