@@ -400,3 +400,5 @@ report/proposal.pdf
 **/dataset/
 .vscode/settings.json
 report/report.pdf
+
+\.DS_Store

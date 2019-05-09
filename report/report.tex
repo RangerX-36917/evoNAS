@@ -187,8 +187,7 @@
 
 The $population$ size is $N$ and the algorithm evolve $G$ generations in total. $entireGen$ stores all network models that we generated. $P$ and $t$ are hyper-parameters controlling the actual lifespan of an individual.
      
-In $networkInit()$, $N$ initial network models are generated. New Networks are generated in $Network Initialization$ with their $age $ being set to 1 and $lifetime$ set to the default value. The architecture of the network is gained by randomly forming some legal edge to obtain a legal architecture. 
-A edge is legal if its origin is a input or previous layer of the destination hidden layer. A legal architecture is an architecture with all hidden layer have positive in-degree. We need to keep edges and architectures legal all the time. 
+In $networkInit()$, $N$ initial network models are generated. New Networks are generated in $Network Initialization$ with their $age $ being set to 1 and $lifetime$ being set to the default value. The architecture of the network is obtained by randomly adding legal connections. A legal architecture is one with all hidden states having a positive in-degree and without any go-back connections. 
 
  \begin{algorithm}[H]  
 	\caption{ Network Initialization}
@@ -275,41 +274,28 @@ A edge is legal if its origin is a input or previous layer of the destination hi
  \subsection{specification}
  The followings are the parameters used in our experiment during search process.
  \begin{enumerate}
-  \item Population Size $N$ = 10
+  \item Population Size $population$ = 10
   \item Sample Size $X$ = 5
   \item Total Generations: 30
   \item Batch Size: 100
   \item Learning Rate: 0.001
   \item Epoch: 10
+  \item Stack depth: $N = 2$
+  \item Number of Channels: 32 for stack1, 64 for stack2 and 128 for stack3.
  \end{enumerate}
 
  \subsection{Result}
 
- Fig.\ref{found_artc} shows the best model our algorithm found. Table\ref{table:1} shows the performance comparison of the searched model and other models.
+ Fig.\ref{found_artc} shows the best model our algorithm found. Currently our model is still primitive. So this result is more of a validation of the correctness of our code.
 
 \begin{figure}[H]
  	\centering
  	\includegraphics[width=0.4\textwidth]{figures/cellStruct.png}
-   \caption{The simplified overall artitecture of the total network. LEFT: outer structure. MIDDLE: detailed structure of normal cell stack. RIGHT: Structure between the last cell and Softmax layer}\label{fig:digit}
+   \caption{The structure of the found network. }\label{fig:digit}
    \label{found_artc}
   \end{figure}
 
-  \begin{table}[H]
-    
-    \centering
-      \begin{tabular}{cccc}
-      \toprule
-      Model&Accuracy\\
-      \midrule
-      $Searched  Model$&70.00\%\\
-      $VGG\_Net$&90.00\%\\
-  \bottomrule
-  \end{tabular}
-  \caption{Performance comparison between the searched model and other hand-crafted models.}
-  \label{table:1}
-  \end{table}
-
-
+  
 
  \section{Future Work}  
 
