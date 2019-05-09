@@ -86,7 +86,7 @@
 
     \section{Methodology}
 
-    We will develop an evolutionary neural architecture search algorithm based on the $age$ of individuals. By incorporating $age$ as a part of gene, we can prolong the existence of good individuals\cite{DBLP:journals/corr/abs-1802-01548} and kill average individuals when their age reach a certain limit\cite{Hornby:2006:AAP:1143997.1144142}. 
+    We will develop an evolutionary neural architecture search algorithm based on the $age$ of individuals. By incorporating $age$ as a part of a gene, we can prolong the existence of good individuals\cite{DBLP:journals/corr/abs-1802-01548} and kill average individuals when their age reach a certain limit\cite{Hornby:2006:AAP:1143997.1144142}. 
 
     Combining the advantage of the above works, we propose a population update police based on $age$ and that preserves a parent whose child has good performance. An individual is dropped from the total population if its $age$ exceeds a predefined $lifetime$. However, we prolong its life if its offspring performs well (e.g. within top $P\%$ in ranking). In this way, we hope to preserve good parent architectures in the population.
 
@@ -96,11 +96,11 @@
   \section{System Design}
   \subsection{Cell-based Search Space}
 
-  We explore a cell-based search space with 5 hidden cells, as is illustrated in Fig.\ref{f_artc}. Each edge in Fig.\ref{f_artc} represents a neural network unit. Each squre represents a tensor in the neural network.
+  We explore a cell-based search space with 5 hidden cells, as is illustrated in Fig.\ref{f_artc}. Each edge in Fig.\ref{f_artc} represents a neural network unit. Each square represents a tensor in the neural network.
 
   \subsubsection{Neural Network Units}
   
-  There are 7 possible neural network units that is suitable for image classification problems in our search space:
+  There are 7 possible neural network units that are suitable for image classification problems in our search space:
 
       \begin{enumerate}
         \item identity
@@ -139,7 +139,7 @@
 
   \subsection{Early Stop Performance Estimation}
 
-  To accelerate the evolution process, we need to find a way to estimate the performance of a generated neural architecture. We use a early-stop strategy which train the neural network with a small \emph{epoch} value. This approach can noticebly cut the training time of a network and at the same time provides a relatively reliable performance comparison metric.
+  To accelerate the evolution process, we need to find a way to estimate the performance of a generated neural architecture. We use an early-stop strategy which trains the neural network with a small \emph{epoch} value. This approach can noticeably cut the training time of a network and at the same time provides a relatively reliable performance comparison metric.
 
   \subsection{Evolutionary Algorithm Framework}
   
@@ -183,9 +183,9 @@
   \end{algorithmic}  
   \end{algorithm}  
   For now, we follow the design of a cell based evolutionary NAS algorithm described in\cite{DBLP:journals/corr/abs-1802-01548} except that we propose a population update policy to preserve good parents. 
-  Our evolutionary algorithm features a elite parent preserving strategy in which the lifetime of the parent whose child has a high accuracy rank within the total population is extended. In this way, we hope to preserve good genes in the population and produce more high quality offsprings.
+  Our evolutionary algorithm features an elite parent preserving strategy in which the lifetime of the parent whose child has a high accuracy rank within the total population is extended. In this way, we hope to preserve good genes in the population and produce more high-quality offsprings.
 
-The $population$ size is $N$ and the algorithm evolve $G$ generations in total. $entireGen$ stores all network models that we generated. $P$ and $t$ are hyper-parameters controlling the actual lifespan of an individual.
+The $population$ size is $N$ and the algorithm evolves $G$ generations in total. $entireGen$ stores all network models that we generated. $P$ and $t$ are hyper-parameters controlling the actual lifespan of an individual.
      
 In $networkInit()$, $N$ initial network models are generated. New Networks are generated in $Network Initialization$ with their $age $ being set to 1 and $lifetime$ being set to the default value. The architecture of the network is obtained by randomly adding legal connections. A legal architecture is one with all hidden states having a positive in-degree and without any go-back connections. 
 
@@ -232,7 +232,7 @@ In $networkInit()$, $N$ initial network models are generated. New Networks are g
 	\end{algorithmic}  
 \end{algorithm}  
 
-  When sampling the parent individual, we randomly take $X$ individuals from the population and pick the one with highest estimated accuracy. The mutation operation includes adding, deleting and altering an edge(NN unit). Fig.\ref{mutation} gives an example. At the same time, the result model must be valid and conform with our representation definition. Currently mutation operations are stochastic. A better heuristic approach can be used to improve performance.
+  When sampling the parent individual, we randomly take $X$ individuals from the population and pick the one with the highest estimated accuracy. The mutation operation includes adding, deleting and altering an edge(NN unit). Fig.\ref{mutation} gives an example. At the same time, the resulting model must be valid and conform to our representation definition. Currently, mutation operations are stochastic. A better heuristic approach can be used to improve performance.
 
  \begin{algorithm}[H]  
 	\caption{ Mutation Operation}
@@ -286,7 +286,7 @@ In $networkInit()$, $N$ initial network models are generated. New Networks are g
 
  \subsection{Result}
 
- Fig.\ref{found_artc} shows the best model our algorithm found. Currently our model is still primitive. So this result is more of a validation of the correctness of our code.
+ Fig.\ref{found_artc} shows the best model our algorithm found. Currently, our model is still primitive. So this result is more of a validation of the correctness of our code.
 
 \begin{figure}[H]
  	\centering
@@ -299,20 +299,20 @@ In $networkInit()$, $N$ initial network models are generated. New Networks are g
 
  \section{Future Work}  
 
- We have already defined the representation of neural architectures and have implemented the evolutionary search algorithm. The followings are the improvements we are going to make for finishing this project.
+ We have already defined the representation of neural architectures and have implemented the evolutionary search algorithm. The following are the improvements we are going to make for finishing this project.
  
   
   \subsubsection{Weight Sharing of Neural Networks}    
-  One major cost in NAS is the training of neural networks. Offspring networks are generated through mutation operation and share a lot of structures with their parents. Therefore, we can let theoffspring inherit the weights of its parent. This will cut the training time cost significantly compared to training a neural network from scratch.
+  One major cost in NAS is the training of neural networks. Offspring networks are generated through mutation operation and share a lot of structures with their parents. Therefore, we can let the offspring inherit the weights of its parent. This will cut the training time cost significantly compared to training a neural network from scratch.
   
   \subsubsection{Heuristic Mutation Operation}
-  Currently, the mutation operation is stochastic. Experiments show that such random mutation operation has very limited search ability. We can try to design a heuristic mutation operation based on knowledge in neural network architectures and possibly graph theory.
+  Currently, the mutation operation is stochastic. Experiments show that such a random mutation operation has very limited searchability. We can try to design a heuristic mutation operation based on knowledge in neural network architectures and possibly graph theory.
   
   \subsubsection{More Efficient Performance Estimation}
-  A better performance estimation approach is needed to accelerate the search process. We may try some approaches that require little trainning.
+  A better performance estimation approach is needed to accelerate the search process. We may try some approaches that require little training.
   
   \subsubsection{Find Proper Size of a Cell}
-  The training cost is highly related to the amount of parameters in a neural network. We should find a way to set a proper size (number of hidden states) for the cell. This will help to find a good neural network architecture without enlarge the search space too much.
+  The training cost is highly related to the amount of parameters in a neural network. We should find a way to set a proper size (number of hidden states) for the cell. This will help to find a good neural network architecture without enlarging the search space too much.
    
 
 \bibliographystyle{ieeetr}
