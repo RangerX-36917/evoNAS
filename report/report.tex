@@ -262,10 +262,10 @@ In $networkInit()$, $N$ initial network models are generated. New Networks are g
 \end{algorithm}  
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.45\textwidth]{figures/mutation.png}
-    \caption{Illustration of the three types of mutations}\label{fig:digit}
-    \label{mutation}
+	\centering
+	\includegraphics[width=0.45\textwidth]{figures/mutation.png}
+	\caption{Three mutation operations.}\label{fig:digit}
+	\label{mutation}
 \end{figure}
 
 
@@ -279,19 +279,19 @@ In $networkInit()$, $N$ initial network models are generated. New Networks are g
   \item Total Generations: 30
   \item Batch Size: 100
   \item Learning Rate: 0.001
-  \item Epoch: 10
+  \item Epoch: 20
   \item Stack depth: $N = 2$
   \item Number of Channels: 32 for stack1, 64 for stack2 and 128 for stack3.
  \end{enumerate}
 
  \subsection{Result}
 
- Fig.\ref{found_artc} shows the best model our algorithm found. Currently, our model is still primitive. So this result is more of a validation of the correctness of our code.
+ Fig.\ref{found_artc} shows the best model our algorithm found that reaches an accuracy of 70\% on CIFAR-10 dataset.Currently, our model is still primitive. So this result is more of a validation of the correctness of our code.
 
 \begin{figure}[H]
-     \centering
-     \includegraphics[width=0.4\textwidth]{figures/cellStruct.png}
-   \caption{The structure of the found network. }\label{fig:digit}
+ 	\centering
+ 	\includegraphics[width=0.4\textwidth]{figures/result.png}
+   \caption{Structure of the found network. }\label{fig:digit}
    \label{found_artc}
   \end{figure}
 
