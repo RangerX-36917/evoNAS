@@ -126,6 +126,6 @@ if __name__ == '__main__':
 
     model = CNN(cell_config_list, class_num=len(classes))
 
-    train(model, trainloader)
+    # train(model, trainloader)
 
     evaluate(model, testloader)

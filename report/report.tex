@@ -232,7 +232,7 @@ In $networkInit()$, $N$ initial network models are generated. New Networks are g
 	\end{algorithmic}  
 \end{algorithm}  
 
-  When sampling the parent individual, we randomly take $X$ individuals from the population and pick the one with highest estimated accuracy. The mutation operation includes adding, deleting and altering an edge(NN unit). At the same time, the result model must be valid and conform with our representation definition. Currently mutation operations are stochastic. A better heuristic approach can be used to improve performance.
+  When sampling the parent individual, we randomly take $X$ individuals from the population and pick the one with highest estimated accuracy. The mutation operation includes adding, deleting and altering an edge(NN unit). Fig.\ref{mutation} gives an example. At the same time, the result model must be valid and conform with our representation definition. Currently mutation operations are stochastic. A better heuristic approach can be used to improve performance.
 
  \begin{algorithm}[H]  
 	\caption{ Mutation Operation}
@@ -246,11 +246,28 @@ In $networkInit()$, $N$ initial network models are generated. New Networks are g
 		\State Randomly pick a mutate position between two hidden layer.
 		\While {$arch$ is unchanged or $arch$ is illegal}
 		\State Apply mutation to the chosen position. 
-		\EndWhile
-		\State Add edges from layers with 0 out-degree to the output layer.
-		
+    \EndWhile
+    
+    \State $edge_{out} \gets \phi$
+    \ForAll {$i$ with 0 out-degree}
+      \State $e \gets$ edge from $i$ to output layer with identity unit.
+      \State $edge_{out}$.add($e$)
+    \EndFor
+
+    \State $arch$.replace($edge_{out}\_old$,$edge_{out}$)
+
+    \\
+    \Return arch
 	\end{algorithmic}  
 \end{algorithm}  
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.45\textwidth]{figures/mutation.png}
+	\caption{Illustration of the three types of mutations}\label{fig:digit}
+	\label{mutation}
+\end{figure}
+
 
  \section{Experiments}
 
