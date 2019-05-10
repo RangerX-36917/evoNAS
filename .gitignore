@@ -399,6 +399,9 @@ report/proposal.pdf
 
 **/dataset/
 .vscode/settings.json
-report/report.pdf
+./report/report.pdf
+*.pdf
+./report/proposal.pdf
 
 \.DS_Store
+pre/mid/~$5.9_mid_report.pptx
