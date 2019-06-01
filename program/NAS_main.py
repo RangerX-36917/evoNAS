@@ -26,18 +26,22 @@ SAMPLE_SIZE = 5
 # ax.scatter(
 #     xvalues, yvalues, marker='.', facecolor=(0.0, 0.0, 0.0),
 #     edgecolor='r', linewidth=1, s=1)
-# try:
-history = NewAgingEvolution.NAS_evolution(cycles=CYCLES, population_size=POPULATION_SIZE, sample_size=SAMPLE_SIZE)
-# except Exception, e:
-    # print(e.message)
+dir="6_1/"
+try:
+    history = NewAgingEvolution.NAS_evolution(cycles=CYCLES, population_size=POPULATION_SIZE, sample_size=SAMPLE_SIZE,dir)
+except Exception, e:
+    print(e.message)
 
-det_str = pickle.dumps(history)
 
+with open(dir+'history',"wb") as f:
+    pickle.dump(history,f)
 
-f = open('history','wb')  
-data = {'k1':'python','k2':'java'}
-f.write(pickle.dumps(data))  
-f.close()
+# f = open(dir+'history','wb')  
+# det_str = pickle.dumps(history)
+
+# data = {'k1':'python','k2':'java'}
+# f.write(pickle.dumps(det_str))  
+# f.close()
 
 xvalues = range(len(history))
 yvalues = [i.accuracy for i in history]

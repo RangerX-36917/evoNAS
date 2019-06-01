@@ -2,6 +2,7 @@ import collections
 import random
 import Model
 import opration
+import pickle
 
 
 def regularized_evolution(cycles, population_size, sample_size):
@@ -72,7 +73,7 @@ def regularized_evolution(cycles, population_size, sample_size):
     return history
 
 
-def NAS_evolution(cycles, population_size, sample_size):
+def NAS_evolution(cycles, population_size, sample_size,dir):
     # population = collections.deque()
     population = []
     history = []  # Not used by the algorithm, only used to report results.
@@ -88,6 +89,9 @@ def NAS_evolution(cycles, population_size, sample_size):
         model.life = population_size
         population.append(model)
         history.append(model)
+
+        with open(dir+'gen '+len(history),"wb") as f:
+            pickle.dump(history,f)
 
     # Carry out evolution in cycles. Each cycle produces a model and removes
     # another.
@@ -127,5 +131,9 @@ def NAS_evolution(cycles, population_size, sample_size):
             p.age += 1
             if p.age >= p.life:
                 population.remove(p)
+        
+        with open(dir+'gen'+len(history),"wb") as f:
+            pickle.dump(history,f)
+
 
     return history
