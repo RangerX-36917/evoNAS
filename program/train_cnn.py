@@ -1,5 +1,4 @@
 import time
-
 import torch.nn
 import torch
 import torch.optim
@@ -7,7 +6,7 @@ from torch.utils.data.dataloader import DataLoader
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 
-import cnn.CNN
+from cnn.CNN import *
 
 LR = 0.001
 DROPOUT = 0.2
@@ -18,7 +17,7 @@ DATASET_PATH = './dataset'
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
-def train(model: torch.nn.Module, trainloader):
+def train(model: torch.nn.Module, trainloader, testloader):
     model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=LR)
     loss_func = torch.nn.CrossEntropyLoss()
@@ -45,6 +44,7 @@ def train(model: torch.nn.Module, trainloader):
                 pass
             
         print('epoch {} finished, cost {:.3f} sec'.format(epoch, time.time() - start_time))
+        evaluate(model, testloader)
         print('=======================\n\n\n')
 
 
@@ -122,19 +122,17 @@ if __name__ == '__main__':
         7: [(5, 1), (6, 1)]
     }
     '''
-
     config_list = {
-        2: [(0, 2)],
-        3: [(2, 4)],
-        4: [(3, 4)],
-        5: [(1, 6), (2,6)],
-        6: [(0, 5)],
-        7: [(4, 1), (5, 1), (6,1)]
+        2: [(0, 7),(1, 7)],
+        3: [(1, 7), (2, 7)],
+        4: [(2, 7), (3, 7)],
+        5: [(3, 7), (4, 7)],
+        
     }
     cell_config_list = {'normal_cell': config_list}
-
+    
     model = CNN(cell_config_list, class_num=len(classes))
-
-    # train(model, trainloader)
-
     evaluate(model, testloader)
+    train(model, trainloader, testloader)
+
+#    evaluate(model, testloader)

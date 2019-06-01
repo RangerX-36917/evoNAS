@@ -26,17 +26,17 @@ class CNN(nn.Module):
         _size=image_size
 
         # TODO: use parameter representation (current only suitable for image with 3 channels)
-        channel1 = 32
+        channel1 = 64
         self.normal_layer1 = ResBlock(normal_cell_conf, N, conv_channels=channel1, in_channels=3)
         self.reduction_layer1 = nn.MaxPool2d(kernel_size=2)
         _size//=2
-
-        channel2 = 64
+        
+        channel2 = 128
         self.normal_layer2 = ResBlock(normal_cell_conf, N, conv_channels=channel2, in_channels=channel1)
         self.reduction_layer2 = nn.MaxPool2d(kernel_size=2)
         _size //= 2
 
-        channel3 = 128
+        channel3 = 256
         self.normal_layer3 = ResBlock(normal_cell_conf, N, conv_channels=channel3, in_channels=channel2)
 
         channel4 = 512
