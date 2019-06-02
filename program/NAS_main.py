@@ -27,26 +27,32 @@ SAMPLE_SIZE = 3
 # ax.scatter(
 #     xvalues, yvalues, marker='.', facecolor=(0.0, 0.0, 0.0),
 #     edgecolor='r', linewidth=1, s=1)
-dir="6_1/"
+dir = "6_1/"
 # try:
-population=[]
+population = []
 
-model=Model.NASModel()
+model = Model.NASModel()
 # set the init architecture below
-# model.normal_arch=
+model.normal_arch = {2: [(0, 1), (1, 7)],
+                     3: [(0, 0), (1, 1), (2, 7)],
+                     4: [(0, 0), (1, 0), (2, 1), (3, 7)],
+                     5: [(0, 0), (1, 0), (2, 0), (3, 1), (4, 7)],
+                     6: [(2, 0), (3, 0), (4, 1), (5, 7)]}
+
 # model.reduction_arch=
 model.accuracy = model.train_NAS()
-model.age = POPULATION_SIZE-1
+model.age = POPULATION_SIZE - 1
 model.life = POPULATION_SIZE
 population.append(model)
 
-history = NewAgingEvolution.NAS_evolution(pop=population,cycles=CYCLES, population_size=POPULATION_SIZE, sample_size=SAMPLE_SIZE, dir=dir)
+history = NewAgingEvolution.NAS_evolution(pop=population, cycles=CYCLES, population_size=POPULATION_SIZE,
+                                          sample_size=SAMPLE_SIZE, dir=dir)
 # except Exception, e:
 #     print(e.message)
 
 
-with open(dir+'history',"wb") as f:
-    pickle.dump(history,f)
+with open(dir + 'history', "wb") as f:
+    pickle.dump(history, f)
 
 # f = open(dir+'history','wb')  
 # det_str = pickle.dumps(history)
@@ -61,7 +67,6 @@ ax = plt.gca()
 ax.scatter(
     xvalues, yvalues, marker='.', facecolor=(0.0, 0.0, 0.0),
     edgecolor='b', linewidth=1, s=1)
-
 
 ax.xaxis.set_major_locator(ticker.LinearLocator(numticks=2))
 ax.xaxis.set_major_formatter(ticker.ScalarFormatter())
@@ -82,4 +87,4 @@ plt.ylabel('Accuracy', labelpad=-30, fontsize=16)
 plt.xlim(0, 10000)
 
 sns.despine()
-#plt.show()
+# plt.show()

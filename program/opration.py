@@ -7,7 +7,7 @@ hidden_layer_range = [i for i in range(100)]
 # [(0,2),(0,3),(0,4),(0,5),(0,6),(1,2),(1,3),(1,4),(1,5),(1,6),(2,3),(2,4),(2,5),(2,6),
 #   (3,4),(3,5),(3,6),(4,5),(4,6),(5,6)]
 N = 20
-hidden_layer_num = 5
+hidden_layer_num = 4
 max_op = 7
 
 
@@ -113,6 +113,8 @@ def NAS_mutate_arch(arch):
         if (count == 1 and arch[mutate_layer][mutate_position][1] > 0 and op_mutated == 0) or (op_mutated==arch[mutate_layer][mutate_position]):
             # op_mutated = random.randint(1, max_op)
             continue
+        else:
+            break
 
 
     arch[mutate_layer][mutate_position] = (mutate_position, op_mutated)

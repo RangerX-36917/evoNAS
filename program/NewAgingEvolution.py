@@ -100,7 +100,7 @@ def NAS_evolution(pop,cycles, population_size, sample_size,dir):
         model = Model.NASModel()
         if len(population)>1:
             model.normal_arch=opration.NAS_mutate_arch(population[0].normal_arch)
-            model.reduction_arch=opration.NAS_mutate_arch(population[0].reduction_arch)
+            # model.reduction_arch=opration.NAS_mutate_arch(population[0].reduction_arch)
         else:    
             model.normal_arch = opration.random_NAS_architecture()
             model.reduction_arch = opration.random_NAS_architecture()
