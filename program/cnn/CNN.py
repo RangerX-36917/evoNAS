@@ -29,7 +29,7 @@ class CNN(nn.Module):
         channel1 = 64
         self.normal_layer1 = ResBlock(normal_cell_conf, N, conv_channels=channel1, in_channels=3)
         self.reduction_layer1 = nn.MaxPool2d(kernel_size=2)
-        _size//=2
+        _size //=2
         
         channel2 = 128
         self.normal_layer2 = ResBlock(normal_cell_conf, N, conv_channels=channel2, in_channels=channel1)
@@ -38,11 +38,11 @@ class CNN(nn.Module):
 
         channel3 = 256
         self.normal_layer3 = ResBlock(normal_cell_conf, N, conv_channels=channel3, in_channels=channel2)
+        self.reduction_layer3 = nn.MaxPool2d(kernel_size=2)
+        _size //=2
 
         channel4 = 512
         self.conv1x1 = choose_conv_elem(4, in_channels=channel3, out_channels=channel4)
-
-
         # print(_size)
         self.gap_layer = nn.AvgPool2d(kernel_size=int(_size))
 
@@ -53,12 +53,13 @@ class CNN(nn.Module):
     def forward(self, x: torch.Tensor):
         # input(28,28)
         cnn_part = nn.Sequential(
-            self.normal_layer1,  # -> (32,32,32)
+            self.normal_layer1,  # -> (64,32,32)
             self.reduction_layer1,
-            self.normal_layer2,  # -> (64,16,16)
+            self.normal_layer2,  # -> (128,16,16)
             self.reduction_layer2,
-            self.normal_layer3,  # -> (128,8,8)
-            self.conv1x1,  # -> (512,8,8)
+            self.normal_layer3,  # -> (256,8,8)
+            self.reduction_layer3,
+            self.conv1x1,  # -> (512,4,4)
             self.gap_layer,  # -> (512,1,1)
         )
 
