@@ -10,7 +10,7 @@ import pickle
 sns.set_style('white')
 CYCLES = 100
 POPULATION_SIZE = 10
-SAMPLE_SIZE = 5
+SAMPLE_SIZE = 3
 # history = AgingEvolution.NAS_evolution(cycles=10000, population_size=500, sample_size=50)
 # xvalues = range(len(history))
 # yvalues = [i.accuracy for i in history]
@@ -27,10 +27,11 @@ SAMPLE_SIZE = 5
 #     xvalues, yvalues, marker='.', facecolor=(0.0, 0.0, 0.0),
 #     edgecolor='r', linewidth=1, s=1)
 dir="6_1/"
-try:
-    history = NewAgingEvolution.NAS_evolution(cycles=CYCLES, population_size=POPULATION_SIZE, sample_size=SAMPLE_SIZE,dir)
-except Exception, e:
-    print(e.message)
+# try:
+population=[]
+history = NewAgingEvolution.NAS_evolution(pop=population,cycles=CYCLES, population_size=POPULATION_SIZE, sample_size=SAMPLE_SIZE, dir=dir)
+# except Exception, e:
+#     print(e.message)
 
 
 with open(dir+'history',"wb") as f:

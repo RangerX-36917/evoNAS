@@ -73,23 +73,49 @@ def random_NAS_architecture():
 
     return arch
 
+def choose_op():
+    op=-1
+
+    if random.random()<0.4:
+        op=1
+    else:
+        if random.random()<0.8:
+            op_mutated = random.randint(4, 7)
+        else:
+            op_mutated = random.randint(2, 3)
+
+    return op
 
 def NAS_mutate_arch(arch):
     arch = copy.deepcopy(arch)
 
-    mutate_layer = random.randint(2, hidden_layer_num + 1)
-    mutate_position = random.randint(0, mutate_layer - 1)
+    while True:
+        mutate_layer = random.randint(2, hidden_layer_num + 1)
+        mutate_position = random.randint(0, mutate_layer - 1)
 
-    count = 0
-    for i in range(mutate_layer):
-        if arch[mutate_layer][i][1] > 0:
-            count += 1
-    op_mutated = (arch[mutate_layer][mutate_position][1] +
-                  random.randint(1, max_op)) % (max_op + 1)
-    if count == 1 and arch[mutate_layer][mutate_position][1] > 0 and op_mutated == 0:
-        op_mutated = random.randint(1, max_op)
+        if random.random()<0.3:
+            if arch[mutate_layer][mutate_position]==0:
+                op_mutated=choose_op()
+            else:
+                op_mutated=0
+        else:
+            if arch[mutate_layer][mutate_position]==0:
+                continue
+            else:
+                op_mutated=choose_op()
+
+        count = 0
+        for i in range(mutate_layer):
+            if arch[mutate_layer][i][1] > 0:
+                count += 1
+
+        # op_mutated = (arch[mutate_layer][mutate_position][1] + random.randint(1, max_op)) % (max_op + 1)
+        if (count == 1 and arch[mutate_layer][mutate_position][1] > 0 and op_mutated == 0) or (op_mutated==arch[mutate_layer][mutate_position]):
+            # op_mutated = random.randint(1, max_op)
+            continue
+
+
     arch[mutate_layer][mutate_position] = (mutate_position, op_mutated)
-
     cal_output_layer(arch)
 
     return arch

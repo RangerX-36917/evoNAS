@@ -1,4 +1,5 @@
 import collections
+import copy
 import random
 import Model
 import opration
@@ -73,19 +74,38 @@ def regularized_evolution(cycles, population_size, sample_size):
     return history
 
 
-def NAS_evolution(cycles, population_size, sample_size,dir):
+def NAS_evolution(pop,cycles, population_size, sample_size,dir):
     # population = collections.deque()
-    population = []
-    history = []  # Not used by the algorithm, only used to report results.
+    population = pop
+    history = copy.deepcopy(pop)  # Not used by the algorithm, only used to report results.
 
     # Initialize the population with random models.
-    # while len(population) < population_size:
-    for i in range(population_size):
+
+    # for i in range(population_size):
+    # # while len(population)<population_size:
+    #     model = Model.NASModel()
+    #     model.normal_arch = opration.random_NAS_architecture()
+    #     model.reduction_arch = opration.random_NAS_architecture()
+    #     model.accuracy = model.train_NAS()
+    #     model.age = population_size - i
+    #     model.life = population_size
+    #     population.append(model)
+    #     history.append(model)
+
+    #     with open(dir+'gen '+len(history),"wb") as f:
+    #         pickle.dump(history,f)
+
+        # for i in range(population_size):
+    while len(population)<population_size:
         model = Model.NASModel()
-        model.normal_arch = opration.random_NAS_architecture()
-        model.reduction_arch = opration.random_NAS_architecture()
+        if len(population)>1:
+            model.normal_arch=opration.NAS_mutate_arch(population[0].normal_arch)
+            model.reduction_arch=opration.NAS_mutate_arch(population[0].reduction_arch)
+        else:    
+            model.normal_arch = opration.random_NAS_architecture()
+            model.reduction_arch = opration.random_NAS_architecture()
         model.accuracy = model.train_NAS()
-        model.age = population_size - i
+        model.age = population_size - len(population)
         model.life = population_size
         population.append(model)
         history.append(model)
