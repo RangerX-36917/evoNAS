@@ -5,6 +5,7 @@ import AgingEvolution
 import NonAgingEvolution
 import NewAgingEvolution
 import pickle
+import Model
 
 # history = AgingEvolution.regularized_evolution(cycles=10000, population_size=10000, sample_size=50)
 sns.set_style('white')
@@ -29,6 +30,16 @@ SAMPLE_SIZE = 3
 dir="6_1/"
 # try:
 population=[]
+
+model=Model.NASModel()
+# set the init architecture below
+# model.normal_arch=
+# model.reduction_arch=
+model.accuracy = model.train_NAS()
+model.age = POPULATION_SIZE-1
+model.life = POPULATION_SIZE
+population.append(model)
+
 history = NewAgingEvolution.NAS_evolution(pop=population,cycles=CYCLES, population_size=POPULATION_SIZE, sample_size=SAMPLE_SIZE, dir=dir)
 # except Exception, e:
 #     print(e.message)
