@@ -80,9 +80,9 @@ def choose_op():
         op=1
     else:
         if random.random()<0.8:
-            op_mutated = random.randint(4, 7)
+            op = random.randint(4, 7)
         else:
-            op_mutated = random.randint(2, 3)
+            op = random.randint(2, 3)
 
     return op
 

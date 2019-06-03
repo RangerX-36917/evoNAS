@@ -98,7 +98,7 @@ def NAS_evolution(pop,cycles, population_size, sample_size,dir):
         # for i in range(population_size):
     while len(population)<population_size:
         model = Model.NASModel()
-        if len(population)>1:
+        if len(population)>0:
             model.normal_arch=opration.NAS_mutate_arch(population[0].normal_arch)
             # model.reduction_arch=opration.NAS_mutate_arch(population[0].reduction_arch)
         else:    
@@ -110,7 +110,7 @@ def NAS_evolution(pop,cycles, population_size, sample_size,dir):
         population.append(model)
         history.append(model)
 
-        with open(dir+'gen '+len(history),"wb") as f:
+        with open(dir+'gen '+str(len(history)),"wb") as f:
             pickle.dump(history,f)
 
     # Carry out evolution in cycles. Each cycle produces a model and removes
@@ -152,7 +152,7 @@ def NAS_evolution(pop,cycles, population_size, sample_size,dir):
             if p.age >= p.life:
                 population.remove(p)
         
-        with open(dir+'gen'+len(history),"wb") as f:
+        with open(dir+'gen '+str(len(history)),"wb") as f:
             pickle.dump(history,f)
 
 
