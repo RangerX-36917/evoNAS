@@ -22,7 +22,7 @@ def train(model: torch.nn.Module, trainloader, testloader):
     model = torch.nn.DataParallel(model)
     model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=LR)
-    optimizer=torch.nn.DataParallel(optimizer)
+    # optimizer=torch.nn.DataParallel(optimizer)
     loss_func = torch.nn.CrossEntropyLoss()
     model.to(device)
 
