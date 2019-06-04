@@ -15,6 +15,7 @@ EPOCH = 200
 BATCH_SIZE = 50
 DATASET_PATH = './dataset'
 
+
 # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
@@ -34,7 +35,8 @@ def train(model: torch.nn.Module, trainloader, testloader):
         for step, data in enumerate(trainloader, 0):
             images, labels = data
             if torch.cuda.is_available():
-                images, labels = images.cuda(), labels.cuda()
+                images = images.cuda()
+                labels = labels.cuda()
             output = model(images)
             loss = loss_func(output, labels)
             optimizer.zero_grad()
@@ -62,7 +64,8 @@ def evaluate(model: torch.nn.Module, testloader):
         for data in testloader:
             images, labels = data
             if torch.cuda.is_available():
-                images, labels = images.cuda(), labels.cuda()
+                images = images.cuda()
+                labels = labels.cuda()
 
             output = model(images)
             _, predicted = torch.max(output.data, 1)
@@ -134,13 +137,13 @@ if __name__ == '__main__':
         2: [(0, 2)],
         3: [(2, 4)],
         4: [(3, 4)],
-        5: [(1, 6), (2,6)],
+        5: [(1, 6), (2, 6)],
         6: [(0, 5)],
-        7: [(4, 1), (5, 1), (6,1)]
+        7: [(4, 1), (5, 1), (6, 1)]
     }
     cell_config_list = {'normal_cell': config_list}
 
-    model = CNN(cell_config_list, class_num=len(classes),N=1)
+    model = CNN(cell_config_list, class_num=len(classes), N=1)
 
     # train(model, trainloader)
 
