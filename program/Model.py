@@ -108,6 +108,6 @@ class NASModel(object):
         cell_config_list = {'normal_cell': arch}
         print(cell_config_list)
 
-        model = CNN.CNN(cell_config_list, class_num=len(classes))
+        model = CNN.CNN(cell_config_list, class_num=len(classes),N=1)
         train_cnn.train(model, trainloader, testloader)
         return train_cnn.evaluate(model, testloader)

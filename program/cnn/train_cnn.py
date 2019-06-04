@@ -7,7 +7,7 @@ from torch.utils.data.dataloader import DataLoader
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 
-import cnn.CNN
+from cnn.CNN import CNN
 
 LR = 0.001
 DROPOUT = 0.2
@@ -134,7 +134,7 @@ if __name__ == '__main__':
     }
     cell_config_list = {'normal_cell': config_list}
 
-    model = CNN(cell_config_list, class_num=len(classes))
+    model = CNN(cell_config_list, class_num=len(classes),N=1)
 
     # train(model, trainloader)
 
