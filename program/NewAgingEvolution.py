@@ -74,7 +74,7 @@ def regularized_evolution(cycles, population_size, sample_size):
     return history
 
 
-def NAS_evolution(pop,cycles, population_size, sample_size,dir):
+def NAS_evolution(pop,cycles, population_size, sample_size, dir):
     # population = collections.deque()
     population = pop
     history = copy.deepcopy(pop)  # Not used by the algorithm, only used to report results.

@@ -109,5 +109,5 @@ class NASModel(object):
         print(cell_config_list)
 
         model = CNN.CNN(cell_config_list, class_num=len(classes))
-        train_cnn.train(model, trainloader)
+        train_cnn.train(model, trainloader, testloader)
         return train_cnn.evaluate(model, testloader)
