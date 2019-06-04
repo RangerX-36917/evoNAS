@@ -44,12 +44,13 @@ class CNN(nn.Module):
         channel4 = 512
         self.normal_layer4=ResBlock(normal_cell_conf, N, conv_channels=channel4, in_channels=channel3)
 
-        channel5=1024
-        self.conv1x1 = choose_conv_elem(4, in_channels=channel4, out_channels=channel5)
+        # channel5=1024
+        # self.conv1x1 = choose_conv_elem(4, in_channels=channel4, out_channels=channel5)
         print(_size)
         self.gap_layer = nn.AvgPool2d(kernel_size=int(_size))
 
-        self.fc1 = nn.Linear(in_features=channel5, out_features=100)
+        # self.fc1 = nn.Linear(in_features=channel5, out_features=100)
+        self.fc1 = nn.Linear(in_features=channel4, out_features=100)
         self.fc2 = nn.Linear(in_features=100, out_features=class_num)
         self.softmax_layer = nn.Softmax(dim=1)
 
@@ -63,7 +64,7 @@ class CNN(nn.Module):
             self.normal_layer3,  # -> (256,8,8)
             self.reduction_layer3,
             self.normal_layer4,
-            self.conv1x1,  # -> (512,4,4)
+            # self.conv1x1,  # -> (512,4,4)
             self.gap_layer,  # -> (512,1,1)
         )
 
