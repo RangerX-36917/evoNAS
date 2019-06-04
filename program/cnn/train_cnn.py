@@ -3,6 +3,7 @@ import time
 import torch.nn
 import torch
 import torch.optim
+from torch.autograd import Variable
 from torch.utils.data.dataloader import DataLoader
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
@@ -22,11 +23,9 @@ DATASET_PATH = './dataset'
 def train(model: torch.nn.Module, trainloader, testloader):
     if torch.cuda.is_available():
         model = torch.nn.DataParallel(model).cuda()
-    # model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=LR)
     # optimizer=torch.nn.DataParallel(optimizer)
     loss_func = torch.nn.CrossEntropyLoss()
-    # model.to(device)
 
     for epoch in range(EPOCH):
         start_time = time.time()
@@ -35,8 +34,9 @@ def train(model: torch.nn.Module, trainloader, testloader):
         for step, data in enumerate(trainloader, 0):
             images, labels = data
             if torch.cuda.is_available():
-                images = images.cuda()
-                labels = labels.cuda()
+
+                images = Variable(images.cuda())
+                labels = Variable(labels.cuda())
             output = model(images)
             loss = loss_func(output, labels)
             optimizer.zero_grad()
@@ -64,8 +64,8 @@ def evaluate(model: torch.nn.Module, testloader):
         for data in testloader:
             images, labels = data
             if torch.cuda.is_available():
-                images = images.cuda()
-                labels = labels.cuda()
+                images =  Variable(images.cuda())
+                labels = Variable(labels.cuda())
 
             output = model(images)
             _, predicted = torch.max(output.data, 1)
@@ -90,12 +90,12 @@ def load_dataset(path: str):
     trainset = datasets.CIFAR10(root=path, train=True,
                                 download=True, transform=transform)
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=BATCH_SIZE,
-                                              shuffle=True, num_workers=2)
+                                              shuffle=True, num_workers=4)
 
     testset = datasets.CIFAR10(root=path, train=False,
                                download=True, transform=transform)
     testloader = torch.utils.data.DataLoader(testset, batch_size=BATCH_SIZE,
-                                             shuffle=False, num_workers=2)
+                                             shuffle=False, num_workers=4)
 
     classes = ('plane', 'car', 'bird', 'cat',
                'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
