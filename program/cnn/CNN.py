@@ -175,7 +175,7 @@ class Cell(nn.Module):
                 for srcnode, conv in self.convs[i]:
                     data.append(conv(hidden_state[srcnode]))
 
-                hidden_state[i] = torch.cat(data, 1).cuda()
+                hidden_state[i] = torch.cat(data, 1).cpu()
 
         if (not self.output_cell_flag):
             x = self.output_conv(hidden_state[self.output_node_idx])
