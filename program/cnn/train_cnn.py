@@ -20,7 +20,7 @@ DATASET_PATH = './dataset'
 
 def train(model: torch.nn.Module, trainloader, testloader):
     if torch.cuda.is_available():
-        model = torch.nn.DataParallel(model.cuda())
+        model = torch.nn.DataParallel(model).cuda()
     # model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=LR)
     # optimizer=torch.nn.DataParallel(optimizer)
@@ -55,7 +55,7 @@ def train(model: torch.nn.Module, trainloader, testloader):
 
 def evaluate(model: torch.nn.Module, testloader):
     if torch.cuda.is_available():
-        model = torch.nn.DataParallel(model.cuda())
+        model = torch.nn.DataParallel(model).cuda()
     correct = 0
     total = 0
     with torch.no_grad():
