@@ -15,7 +15,7 @@ EPOCH = 200
 BATCH_SIZE = 50
 DATASET_PATH = './dataset'
 
-# device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0")
 
 
 def train(model: torch.nn.Module, trainloader, testloader):
@@ -34,7 +34,7 @@ def train(model: torch.nn.Module, trainloader, testloader):
         for step, data in enumerate(trainloader, 0):
             images, labels = data
             if torch.cuda.is_available():
-                images, labels = images.cuda(), labels.cuda()
+                images, labels = images.cuda(device=device), labels.cuda(device=device)
             output = model(images)
             loss = loss_func(output, labels)
             optimizer.zero_grad()
@@ -62,7 +62,7 @@ def evaluate(model: torch.nn.Module, testloader):
         for data in testloader:
             images, labels = data
             if torch.cuda.is_available():
-                images, labels = images.cuda(), labels.cuda()
+                images, labels = images.cuda(device=device), labels.cuda(device=device)
 
             output = model(images)
             _, predicted = torch.max(output.data, 1)

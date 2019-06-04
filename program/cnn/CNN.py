@@ -174,8 +174,11 @@ class Cell(nn.Module):
             if (len(self.convs[i]) > 0):  # check whether this node is used or not
                 for srcnode, conv in self.convs[i]:
                     data.append(conv(hidden_state[srcnode]))
+                if torch.cuda.is_available():
+                    hidden_state[i] = torch.cat(data, 1).cuda(device=torch.device("cuda:0"))
+                else:
+                    hidden_state[i] = torch.cat(data, 1)
 
-                hidden_state[i] = torch.cat(data, 1).cpu()
 
         if (not self.output_cell_flag):
             x = self.output_conv(hidden_state[self.output_node_idx])
