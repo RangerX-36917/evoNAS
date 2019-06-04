@@ -15,16 +15,17 @@ EPOCH = 200
 BATCH_SIZE = 50
 DATASET_PATH = './dataset'
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+# device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
 def train(model: torch.nn.Module, trainloader, testloader):
-    model = torch.nn.DataParallel(model)
-    model.to(device)
+    if torch.cuda.is_available():
+        model = torch.nn.DataParallel(model.cuda())
+    # model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=LR)
     # optimizer=torch.nn.DataParallel(optimizer)
     loss_func = torch.nn.CrossEntropyLoss()
-    model.to(device)
+    # model.to(device)
 
     for epoch in range(EPOCH):
         start_time = time.time()
@@ -32,7 +33,8 @@ def train(model: torch.nn.Module, trainloader, testloader):
         running_loss = 0.0
         for step, data in enumerate(trainloader, 0):
             images, labels = data
-            images, labels = images.to(device), labels.to(device)
+            if torch.cuda.is_available():
+                images, labels = images.cuda(), labels.cuda()
             output = model(images)
             loss = loss_func(output, labels)
             optimizer.zero_grad()
@@ -52,13 +54,15 @@ def train(model: torch.nn.Module, trainloader, testloader):
 
 
 def evaluate(model: torch.nn.Module, testloader):
-    model.to(device)
+    if torch.cuda.is_available():
+        model = torch.nn.DataParallel(model.cuda())
     correct = 0
     total = 0
     with torch.no_grad():
         for data in testloader:
             images, labels = data
-            images, labels = images.to(device), labels.to(device)
+            if torch.cuda.is_available():
+                images, labels = images.cuda(), labels.cuda()
 
             output = model(images)
             _, predicted = torch.max(output.data, 1)
