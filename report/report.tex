@@ -37,7 +37,8 @@
   \maketitle
   
   \begin{abstract}
-  In this project, we propose an elite-parent preserving evolutionary framework for Neural Architecture Search on image classification problems. We have finished the evolutionary algorithm framework and the construction of neural architecture. Currently we focus on a cell-based search space where a neural architecture is composed of multiple interconnected cells. Experiments show the effectiveness of our algorithm in obtaining a neural architecture with good performance. In the future, we will try to add more evolutionary operations and try to enlarge the search space.
+  In this project, we propose an elite-parent preserving evolutionary framework for Neural Architecture Search on image classification problems. We have finished the evolutionary algorithm framework and the construction of neural architecture. Currently we focus on a cell-based search space where a neural architecture is composed of multiple interconnected cells. Experiments show the effectiveness of our algorithm in obtaining a neural architecture with good performance. In the future, we will try to improve the effectiveness of mutation operations and efficiency of training new individual networks.
+  
   \end{abstract}
   \IEEEpeerreviewmaketitle
   
@@ -294,11 +295,11 @@ In $networkInit()$, $N$ initial network models are generated. New Networks are g
 
  \subsection{Result}
 
- Fig.\ref{found_artc} shows the best model our algorithm found that reaches an accuracy of 70\% on CIFAR-10 dataset.Currently, our model is still primitive. So this result is more of a validation of the correctness of our code.
+ Fig.\ref{found_artc} shows the best model our algorithm found that reaches an accuracy of 76\% on CIFAR-10 dataset.Currently, our model is still primitive. This found model is not fully trained. We expect better performance after a full training.
 
 \begin{figure}[H]
  	\centering
- 	\includegraphics[width=0.4\textwidth]{figures/result.png}
+ 	\includegraphics[width=0.4\textwidth]{figures/newResult.png}
    \caption{Structure of the found network. }\label{fig:digit}
    \label{found_artc}
   \end{figure}
@@ -313,11 +314,11 @@ In $networkInit()$, $N$ initial network models are generated. New Networks are g
   \subsubsection{Weight Sharing of Neural Networks}    
   One major cost in NAS is the training of neural networks. Offspring networks are generated through mutation operation and share a lot of structures with their parents. Therefore, we can let the offspring inherit the weights of its parent. This will cut the training time cost significantly compared to training a neural network from scratch.
   
+  \subsubsection{Heuristic Mutation Operations}
+  Our current mutation strategy depends only on simple probabilities. We may look into the usage of different components in the neural network to find a better mutation strategy.
+
   \subsubsection{More Efficient Performance Estimation}
   A better performance estimation approach is needed to accelerate the search process. We may try some approaches that require little training.
-  
-  \subsubsection{Find Proper Size of a Cell}
-  The training cost is highly related to the amount of parameters in a neural network. We should find a way to set a proper size (number of hidden states) for the cell. This will help to find a good neural network architecture without enlarging the search space too much.
    
 
 \bibliographystyle{ieeetr}
