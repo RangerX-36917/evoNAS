@@ -38,10 +38,10 @@ def train(model: torch.nn.Module, trainloader, testloader):
 
             running_loss += loss.item()
 
-            if step % 50 == 49:
-                print('epoch: {0}, iter:{1} loss:{2:.4f}'.format(epoch, step, running_loss / 50))
-                running_loss = 0
-                pass
+            # if step % 50 == 49:
+            print('epoch: {0}, iter:{1} loss:{2:.4f}'.format(epoch, step, running_loss ))
+            running_loss = 0
+
             
         print('epoch {} finished, cost {:.3f} sec'.format(epoch, time.time() - start_time))
         evaluate(model, testloader)
@@ -122,13 +122,17 @@ if __name__ == '__main__':
         7: [(5, 1), (6, 1)]
     }
     '''
-    config_list = {
-        2: [(0, 7),(1, 7)],
-        3: [(1, 7), (2, 7)],
-        4: [(2, 7), (3, 7)],
-        5: [(3, 7), (4, 7)],
-        
-    }
+    # config_list = {
+    #     2: [(0, 7),(1, 7)],
+    #     3: [(1, 7), (2, 7)],
+    #     4: [(2, 7), (3, 7)],
+    #     5: [(3, 7), (4, 7)],
+    #
+    # }
+
+    config_list = {2: [(0, 1), (1, 7)],
+                   3: [(1, 1), (2, 7)],
+                   4: [(2, 1), (3, 7)]}
     cell_config_list = {'normal_cell': config_list}
     
     model = CNN(cell_config_list, class_num=len(classes))
