@@ -7,7 +7,7 @@ from torch.utils.data.dataloader import DataLoader
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 
-from cnn.CNN import CNN
+import cnn.CNN
 
 LR = 0.001
 DROPOUT = 0.2
@@ -18,7 +18,7 @@ DATASET_PATH = './dataset'
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
-def train(model: torch.nn.Module, trainloader, testloader):
+def train(model: torch.nn.Module, trainloader):
     model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=LR)
     loss_func = torch.nn.CrossEntropyLoss()
@@ -43,8 +43,7 @@ def train(model: torch.nn.Module, trainloader, testloader):
                 print('epoch: {0}, iter:{1} loss:{2:.4f}'.format(epoch, step, running_loss / 50))
                 running_loss = 0
                 pass
-        print('epoch{}: '.format(epoch))
-        evaluate(model, testloader)
+            
         print('epoch {} finished, cost {:.3f} sec'.format(epoch, time.time() - start_time))
         print('=======================\n\n\n')
 
@@ -134,7 +133,7 @@ if __name__ == '__main__':
     }
     cell_config_list = {'normal_cell': config_list}
 
-    model = CNN(cell_config_list, class_num=len(classes),N=1)
+    model = CNN(cell_config_list, class_num=len(classes))
 
     # train(model, trainloader)
 
