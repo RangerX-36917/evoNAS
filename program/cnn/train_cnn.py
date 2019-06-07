@@ -11,8 +11,8 @@ from cnn.CNN import CNN
 
 LR = 0.001
 DROPOUT = 0.2
-EPOCH = 200
-BATCH_SIZE = 50
+EPOCH = 40
+BATCH_SIZE = 400
 DATASET_PATH = './dataset'
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -43,8 +43,10 @@ def train(model: torch.nn.Module, trainloader, testloader):
                 print('epoch: {0}, iter:{1} loss:{2:.4f}'.format(epoch, step, running_loss / 50))
                 running_loss = 0
                 pass
-        print('epoch{}: '.format(epoch))
+        print('epoch{} test: '.format(epoch), end="")
         evaluate(model, testloader)
+        print('epoch{} train: '.format(epoch), end="")
+        evaluate(model, trainloader)
         print('epoch {} finished, cost {:.3f} sec'.format(epoch, time.time() - start_time))
         print('=======================\n\n\n')
 

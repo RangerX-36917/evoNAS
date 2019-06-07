@@ -27,21 +27,29 @@ SAMPLE_SIZE = 3
 # ax.scatter(
 #     xvalues, yvalues, marker='.', facecolor=(0.0, 0.0, 0.0),
 #     edgecolor='r', linewidth=1, s=1)
-dir = "6_1/"
+dir = "6_6/"
 # try:
 population = []
 
-model = Model.NASModel()
-# set the init architecture below
-model.normal_arch = {2: [(0, 1), (1, 7)],
-                     3: [(0, 0), (1, 1), (2, 7)],
-                     4: [(0, 0), (1, 0), (2, 1), (3, 7)]}
+with open("history",'rb') as f:
+    his=pickle.load(f)
 
-# model.reduction_arch=
-model.accuracy = model.train_NAS()
-model.age = POPULATION_SIZE - 1
-model.life = POPULATION_SIZE
-population.append(model)
+    for h in his:
+        if h.age<h.life:
+            population.append(h)
+
+if not population:
+    model = Model.NASModel()
+    # set the init architecture below
+    model.normal_arch = {2: [(0, 1), (1, 7)],
+                         3: [(0, 0), (1, 1), (2, 7)],
+                         4: [(0, 0), (1, 0), (2, 1), (3, 7)]}
+
+    # model.reduction_arch=
+    model.accuracy = model.train_NAS()
+    model.age = POPULATION_SIZE - 1
+    model.life = POPULATION_SIZE
+    population.append(model)
 
 history = NewAgingEvolution.NAS_evolution(pop=population, cycles=CYCLES, population_size=POPULATION_SIZE,
                                           sample_size=SAMPLE_SIZE, dir=dir)

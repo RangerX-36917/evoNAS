@@ -10,8 +10,8 @@ from cnn.CNN import *
 
 LR = 0.001
 DROPOUT = 0.2
-EPOCH = 200
-BATCH_SIZE = 50
+EPOCH = 50
+BATCH_SIZE = 200
 DATASET_PATH = './dataset'
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")

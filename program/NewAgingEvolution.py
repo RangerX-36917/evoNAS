@@ -28,11 +28,12 @@ def regularized_evolution(cycles, population_size, sample_size):
 
     # Initialize the population with random models.
     # while len(population) < population_size:
-    for i in range(population_size):
+    # for i in range(population_size):
+    while len(population)<population_size:
         model = Model.Model()
         model.arch = opration.random_architecture()
         model.accuracy = Model.train_and_eval(model.arch)
-        model.age = population_size - i
+        model.age = population_size - len(population)
         model.life = population_size
         population.append(model)
         history.append(model)
@@ -101,7 +102,7 @@ def NAS_evolution(pop,cycles, population_size, sample_size, dir):
         if len(population)>0:
             model.normal_arch=opration.NAS_mutate_arch(population[0].normal_arch)
             # model.reduction_arch=opration.NAS_mutate_arch(population[0].reduction_arch)
-        else:    
+        else:
             model.normal_arch = opration.random_NAS_architecture()
             model.reduction_arch = opration.random_NAS_architecture()
         model.accuracy = model.train_NAS()
@@ -110,7 +111,7 @@ def NAS_evolution(pop,cycles, population_size, sample_size, dir):
         population.append(model)
         history.append(model)
 
-        with open(dir+'gen '+str(len(history)),"wb") as f:
+        with open(dir+'gen_'+str(len(history)),"wb") as f:
             pickle.dump(history,f)
 
     # Carry out evolution in cycles. Each cycle produces a model and removes
@@ -145,14 +146,19 @@ def NAS_evolution(pop,cycles, population_size, sample_size, dir):
         population.sort(key=lambda i: i.accuracy)
         print("---> best:", population[len(population)-1].normal_arch, "\n---> with acc: ",population[len(population)-1].accuracy)
         if child.accuracy > population[int(0.8 * len(population))].accuracy:
-            parent.life += int(population_size * 0.01)
+            parent.life += int(population_size * 0.1)
 
+        pop_next=[]
         for p in population:
             p.age += 1
-            if p.age >= p.life:
-                population.remove(p)
-        
-        with open(dir+'gen '+str(len(history)),"wb") as f:
+            # if p.age >= p.life:
+            #     population.remove(p)
+            if p.age < p.life:
+                pop_next.append(p)
+
+        population=pop_next
+
+        with open(dir+'gen_ '+str(len(history)),"wb") as f:
             pickle.dump(history,f)
 
 
