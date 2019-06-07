@@ -16,9 +16,14 @@ if __name__ == "__main__":
     #     7: [(2, 1), (3, 1), (4, 2), (5, 1), (6, 1)]
     # }
 
-    config_list = {2: [(0, 1), (1, 7)],
-                   3: [(1, 1), (2, 7)],
-                   4: [(2, 1), (3, 7)]}
+    config_list = {
+        2: [(0, 1)],
+        3: [(0, 6)],
+        4: [],
+        5: [(3,7)],
+        6: [(1, 1), (5, 3)],
+        7: [(2, 1), (3, 2), (5, 3), (6, 4)]
+    }
     # config_list = {2: [(0, 1), (1, 5)],
     #                3: [(0, 5), (1, 3)],
     #                4: [(0, 1), (1, 2), (2, 7), (3, 5)],
@@ -31,7 +36,7 @@ if __name__ == "__main__":
     #
     # summary(conv,(3,28,28))
 
-    cnn = CNN(cell_config_list, class_num=10,N=1)
+    cnn = CNN(cell_config_list, class_num=10)
     # cnn=ResBlock(config_list,2,channels=128,in_channels=32)
     # cnn=Cell(config_list,in_channels=32,conv_channels=128)
     # print(cnn)
