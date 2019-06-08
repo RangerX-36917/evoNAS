@@ -39,8 +39,8 @@ def train(model: torch.nn.Module, trainloader):
 
             running_loss += loss.item()
 
-            if step % 50 == 49:
-                print('epoch: {0}, iter:{1} loss:{2:.4f}'.format(epoch, step, running_loss / 50))
+            if step % 10 == 9:
+                print('epoch: {0}, iter:{1} loss:{2:.4f}'.format(epoch, step, running_loss / 10))
                 running_loss = 0
                 pass
             
