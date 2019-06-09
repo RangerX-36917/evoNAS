@@ -18,7 +18,7 @@ DATASET_PATH = './dataset'
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
-def train(model: torch.nn.Module, trainloader):
+def train(model: torch.nn.Module, trainloader, testloader):
     model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=LR)
     loss_func = torch.nn.CrossEntropyLoss()
@@ -43,7 +43,10 @@ def train(model: torch.nn.Module, trainloader):
                 print('epoch: {0}, iter:{1} loss:{2:.4f}'.format(epoch, step, running_loss / 10))
                 running_loss = 0
                 pass
-            
+            print('epoch{} test: '.format(epoch), end="")
+            evaluate(model, testloader)
+            print('epoch{} train: '.format(epoch), end="")
+            evaluate(model, trainloader)
         print('epoch {} finished, cost {:.3f} sec'.format(epoch, time.time() - start_time))
         print('=======================\n\n\n')
 

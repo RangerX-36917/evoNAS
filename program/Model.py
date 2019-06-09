@@ -92,7 +92,7 @@ class NASModel(object):
 
     def __str__(self):
         """Prints a readable version of this bitstring."""
-        return '{0:b}'.format(self.arch)
+        return '{0:b}'.format(self.normal_arch)
 
     def train_NAS(self):
         trainloader, testloader, classes = train_cnn.load_dataset(train_cnn.DATASET_PATH)
