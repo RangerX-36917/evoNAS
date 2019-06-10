@@ -158,7 +158,7 @@ def NAS_evolution(pop,cycles, population_size, sample_size,dir):
 
         population=pop_next
 
-        with open(dir+'gen_ '+str(len(history)),"wb") as f:
+        with open(dir+'gen_'+str(len(history)),"wb") as f:
             pickle.dump(history,f)
 
 

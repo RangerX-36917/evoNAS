@@ -9,7 +9,7 @@ import Model
 
 # history = AgingEvolution.regularized_evolution(cycles=10000, population_size=10000, sample_size=50)
 sns.set_style('white')
-CYCLES = 100
+CYCLES = 500
 POPULATION_SIZE = 10
 SAMPLE_SIZE = 3
 # history = AgingEvolution.NAS_evolution(cycles=10000, population_size=500, sample_size=50)
@@ -27,11 +27,11 @@ SAMPLE_SIZE = 3
 # ax.scatter(
 #     xvalues, yvalues, marker='.', facecolor=(0.0, 0.0, 0.0),
 #     edgecolor='r', linewidth=1, s=1)
-dir = "6_6/"
+dir = "6_10/"
 # try:
 population = []
 
-with open("history",'rb') as f:
+with open("6_6/gen_99",'rb') as f:
     his=pickle.load(f)
 
     for h in his:
@@ -43,7 +43,9 @@ if not population:
     # set the init architecture below
     model.normal_arch = {2: [(0, 1), (1, 7)],
                          3: [(0, 0), (1, 1), (2, 7)],
-                         4: [(0, 0), (1, 0), (2, 1), (3, 7)]}
+                         4: [(0, 0), (1, 0), (2, 1), (3, 7)],
+                         5: [(0, 0), (1, 0), (2, 0), (3, 1),(4 , 7)],
+                         6: [(0, 0), (1, 0), (2, 0), (3, 0),(4 , 1),(5, 1)]}
 
     # model.reduction_arch=
     model.accuracy = model.train_NAS()
