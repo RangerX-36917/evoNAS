@@ -30,13 +30,15 @@ SAMPLE_SIZE = 3
 dir = "6_10/"
 # try:
 population = []
+try:
+    with open("6_6/gen_99",'rb') as f:
+        his=pickle.load(f)
 
-with open("6_6/gen_99",'rb') as f:
-    his=pickle.load(f)
-
-    for h in his:
-        if h.age<h.life:
-            population.append(h)
+        for h in his:
+            if h.age<h.life:
+                population.append(h)
+except Exception:
+    pass
 
 if not population:
     model = Model.NASModel()
