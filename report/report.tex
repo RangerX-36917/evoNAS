@@ -127,7 +127,7 @@
   \end{figure}
 
   \subsection{Overall Neural Network Architecture}
-  As is illustrated in Fig.\ref{total_artc} overall network consists of input layer, 6 ($N = 2$) identical cells, 3 polling layers, 1 global average polling(GAP) layer, 2 fully connected(FC) perceptron layers and 1 softmax layer. 
+  We use an architecture similar to \cite{He_2016_CVPR} to obtain a good performance. As is illustrated in Fig.\ref{total_artc} overall network consists of input layer, 6 ($N = 2$) identical cells, 3 polling layers, 1 global average polling(GAP) layer, 2 fully connected(FC) perceptron layers and 1 softmax layer. 
 
   \begin{figure}[H]
      \centering
@@ -136,7 +136,9 @@
    \label{total_artc}
   \end{figure}
 
-  For simplicity, all cells share the same structure. 
+  For simplicity, all cells share the same structure.
+  
+  
 
   \subsection{Early Stop Performance Estimation}
 
@@ -304,7 +306,16 @@ In $networkInit()$, $N$ initial network models are generated. New Networks are g
    \label{found_artc}
   \end{figure}
 
+\subsection{Analysis}
+  Through some experiments, we observe some problems in this project.
+
+  The biggest problem is computational cost. Currently we have not implemented weight sharing between parent and child networks. Therefore, the evaluation of each newly generated networks takes a lot of time. Depending on the capacity of a network, evaluation of a network may some time from half an hour to several hours. This makes it hard to improve the total number of generations in the evolutionary algorithm, limiting the  search ability of our algorithm.
+
+  In addition, our code didn't have good parallelism. This means that currently we can't fully utilize the power of multi-core CPUs and multiple GPUs on a server. Also, we may use some parallel evolutionary algorithms to improve the search ability of our algorithm. For example, running different evolutionary operators on different cores and machines. Improved parallelism can enhance earch ability as well as efficiency of our model.
   
+  Besides, we lack some knowledge in the effecttiveness of different structures in a convolution neural network. Our heuristic mutation strategy is still based on simple probability. A better mutation operator can be designed based on graph theory or other domain knowledge about neural networks.
+
+
 
  \section{Future Work}  
 
@@ -314,11 +325,13 @@ In $networkInit()$, $N$ initial network models are generated. New Networks are g
   \subsubsection{Weight Sharing of Neural Networks}    
   One major cost in NAS is the training of neural networks. Offspring networks are generated through mutation operation and share a lot of structures with their parents. Therefore, we can let the offspring inherit the weights of its parent. This will cut the training time cost significantly compared to training a neural network from scratch.
   
-  \subsubsection{Heuristic Mutation Operations}
+  \subsubsection{Evolutionary Operators}
   Our current mutation strategy depends only on simple probabilities. We may look into the usage of different components in the neural network to find a better mutation strategy.
 
+  Our current model only uses mutation as evolutionary operator. We may also look at some works that focus on crossover operations between neural networks. Hopefully, this will help us improve search ability.
+
   \subsubsection{More Efficient Performance Estimation}
-  A better performance estimation approach is needed to accelerate the search process. We may try some approaches that require little training.
+  A better performance estimation approach is needed to accelerate the search process. We may try some approaches that require little training or can distinguish good neural networks from bad ones efficiently.
    
 
 \bibliographystyle{ieeetr}
