@@ -273,33 +273,7 @@ In our current experiment, we based on the ResNet Architecture in Fig.\ref{resne
 
   
 
- \begin{algorithm}[H]  
-    \caption{ Mutation Operation}
- 
 
-    \begin{algorithmic}[1]  
-    \Require A network architecture $arch$
-    \Ensure The $arch$ with a mutation
-    
-    
-        \State Randomly pick a mutate position between two hidden layer.
-        \While {$arch$ is unchanged or $arch$ is illegal}
-        \State Apply mutation to the chosen position. 
-    \EndWhile
-    
-    \State $edge_{out} \gets \phi$
-    \ForAll {$i$ with 0 out-degree}
-      \State $e \gets$ edge from $i$ to output layer with identity unit.
-      \State $edge_{out}$.add($e$)
-    \EndFor
-
-    \State $arch$.replace($edge_{out}\_old$,$edge_{out}$)
-
-    \\
-    \Return arch
-    \end{algorithmic}  
-    \label{mutation}
-\end{algorithm}  
 
  \begin{algorithm}[H]  
 	\caption{Heuristic Mutation Operation}
@@ -329,7 +303,7 @@ In our current experiment, we based on the ResNet Architecture in Fig.\ref{resne
 	\label{mutation}
 \end{algorithm}  
 
-  A heuristic mutation procedure is designed for the evolutionary algorithm. Different weights are given to structure change (connection addition and deletion) and connection change (connection type). At first, we randomly choose a position to apply mutation in the network. The probability of edge deletion (or addition if there's no connection) is $30\%$. Otherwise, the connection in that position is changed (or skipped if there's no connection). We also divide connections into two categories: convolutions and pooling operations and assign to them different weight in mutations. More specifically, the probability that an edge becoming a convolution is $80\%$ and that an edge becoming a pooling operation is $20\%$ in connection change. 
+  A heuristic mutation procedure is designed for the evolutionary algorithm. Different weights are given to structure change (connection addition and deletion) and connection change (connection type). At first, we randomly choose a mutation operation using the heuristic rule. Then the mutate position is randomly chosen restricted by the chosen operation(The position should be able to apply such kind of operation). The probability of edge deletion and addition are both $15\%$. The probability of change operation is $70\%$. We also divide connections into two categories: convolutions and pooling operations and assign to them different weight in mutations. More specifically, the probability that an edge becoming a convolution is $80\%$ and that an edge becoming a pooling operation is $20\%$ in connection change. 
 
 \begin{figure}[H]
 	\centering
