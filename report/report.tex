@@ -190,8 +190,8 @@
 
 The $population$ size is $N$ and the algorithm evolves $G$ generations in total. $entireGen$ stores all network models that we generated. $P$ and $t$ are hyper-parameters controlling the actual lifespan of an individual.
      
-In $networkInit()$, $N$ initial network models are generated. New Networks are generated in $Network Initialization$ with their $age $ being set to 1 and $lifetime$ being set to the default value. We first hand crafted a neural architecture and then apply mutation to that architecture to generate the inital population. 
 
+In our midterm experiment, we use Network Initialization ver.1 to generate the initial network. New networks are generated with a random architecture. In the meantime, their $age $ being set to 1 and $lifetime$ being set to the default value. Besides, their accuracy will be estimated right after they being generated.
  \begin{algorithm}[H]  
     \caption{ Network Initialization ver.1}
     
@@ -235,6 +235,10 @@ In $networkInit()$, $N$ initial network models are generated. New Networks are g
     \end{algorithmic}  
 \end{algorithm}  
 
+
+However, we find it is inefficient to initialize population in this way. After receiving some advice from prof. Ishibuchi, we decided to initialize and evolute our population based on one or several existing network architecture with good performance.
+
+In our current experiment, we based on the ResNet Architecture in Fig.\ref{resnet}. Our network initialization algorithm has also been modified to Network Initialization ver.2.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.25\textwidth]{figures/fig_resnet.png}
