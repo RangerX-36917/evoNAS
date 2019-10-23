@@ -161,20 +161,66 @@ def main():
     # evaluate(model, testloader)
 
 
+def eval_cell(normal_cell_config):
+    random.seed(train_config['seed'])
+    np.random.seed(train_config['seed'])
+    torch.manual_seed(train_config['seed'])
+    torch.cuda.manual_seed_all(train_config['seed'])
+
+    batch_size = train_config['batch_size']
+
+    trainloader, testloader, classes = load_dataset(
+        train_config['data_path'], batch_size)
+
+    cell_config_list = {'normal_cell': normal_cell_config}
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    n_gpu = torch.cuda.device_count()
+
+    
+
+    model = NASNetCIFAR(
+        cell_config_list,
+        nasnet_config['num_stem_channels'],
+        nasnet_config['cell_base_channels'],
+        nasnet_config['num_normal_cells'],
+        image_size=32,
+        num_classes=10
+    )
+
+    optimizer = torch.optim.Adam(model.parameters(), lr=train_config['lr'])
+
+    model.to(device)
+    if train_config['fp16']:
+        model,optimizer=amp.initialize(model,optimizer,opt_level='O1')
+
+   
+    if n_gpu > 1:
+        model = nn.DataParallel(model)
+
+    train(model, trainloader, testloader,optimizer, device)
+
+    return evaluate(model, testloader)
+
+
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--config_path', default='config.json',
+                    type=str, help="config file path")
+parser.add_argument('--do_train', action='store_true')
+parser.add_argument('--do_eval', action='store_true')
+args = parser.parse_args()
+config_path = args.config_path
+
+with open(config_path, mode='r', encoding='utf-8') as f:
+    config = json.load(f)
+
+train_config = config['train_config']
+nasnet_config = config['nasnet_config']
+
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--config_path', default='config.json',
-                        type=str, help="config file path")
-    parser.add_argument('--do_train', action='store_true')
-    parser.add_argument('--do_eval', action='store_true')
-    args = parser.parse_args()
-    config_path = args.config_path
 
-    with open(config_path, mode='r', encoding='utf-8') as f:
-        config = json.load(f)
-
-    train_config = config['train_config']
-    nasnet_config = config['nasnet_config']
     normal_cell_config = {
         2: [(0, 2)],
         3: [(2, 4)],

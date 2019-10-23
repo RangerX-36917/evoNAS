@@ -1,7 +1,8 @@
 import copy
 import random
-import cnn.train_cnn as train_cnn
-import cnn.CNN as CNN
+# import cnn.train_cnn as train_cnn
+# import cnn.CNN as CNN
+import train
 
 DIM = 1000  # Number of bits in the bit strings (i.e. the "models").
 NOISE_STDEV = 0.01  # Standard deviation of the simulated training noise.
@@ -95,7 +96,7 @@ class NASModel(object):
         return '{0:b}'.format(self.normal_arch)
 
     def train_NAS(self):
-        trainloader, testloader, classes = train_cnn.load_dataset(train_cnn.DATASET_PATH)
+        # trainloader, testloader, classes = train_cnn.load_dataset(train_cnn.DATASET_PATH)
 
         arch = {}
 
@@ -108,6 +109,8 @@ class NASModel(object):
         cell_config_list = {'normal_cell': arch}
         print(cell_config_list)
 
-        model = CNN.CNN(cell_config_list, class_num=len(classes),N=1)
-        train_cnn.train(model, trainloader, testloader)
-        return train_cnn.evaluate(model, testloader)
+        # model = CNN.CNN(cell_config_list, class_num=len(classes),N=1)
+        # train_cnn.train(model, trainloader, testloader)
+        # return train_cnn.evaluate(model, testloader)
+
+        return train.eval_cell(arch)
