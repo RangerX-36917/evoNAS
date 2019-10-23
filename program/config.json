@@ -1,0 +1,19 @@
+{
+    "train_config":{
+        "seed":114514,
+        "fp16":true,
+        "data_path":"./dataset",
+        "lr":0.001,
+        "dropout_rate":0.2,
+        "batch_size":256,
+        "epoch":50
+
+    },
+    
+    
+    "nasnet_config":{
+        "num_stem_channels":28,
+        "cell_base_channels":32,
+        "num_normal_cells":4
+    }
+}
