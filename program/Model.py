@@ -97,7 +97,7 @@ class NASModel(object):
     def train_NAS(self):
         trainloader, testloader, classes = train_cnn.load_dataset(train_cnn.DATASET_PATH)
 
-        arch = {};
+        arch = {}
 
         for i in self.normal_arch:
             arch[i] = []
