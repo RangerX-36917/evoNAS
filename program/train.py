@@ -200,7 +200,7 @@ def eval_cell(normal_cell_config):
 
     train(model, trainloader, testloader,optimizer, device)
 
-    return evaluate(model, testloader)
+    return evaluate(model, testloader, device)
 
 
 
