@@ -78,7 +78,11 @@ def regularized_evolution(cycles, population_size, sample_size):
 def NAS_evolution(pop,cycles, population_size, sample_size,dir):
     # population = collections.deque()
     population = pop
-    history = copy.deepcopy(pop)  # Not used by the algorithm, only used to report results.
+    history = []
+    for p in pop:
+        history.append(p)
+
+    #history = copy.deepcopy(pop)  # Not used by the algorithm, only used to report results.
 
     # Initialize the population with random models.
 
