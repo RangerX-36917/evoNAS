@@ -57,7 +57,7 @@ def train(model, trainloader, testloader,optimizer, device):
         print('epoch {} finished, cost {:.3f} sec'.format(
             epoch, time.time() - start_time))
         print('=======================\n\n\n')
-
+    torch.cuda.empty_cache()
 
 def evaluate(model: torch.nn.Module, testloader, device):
     correct = 0
@@ -222,11 +222,11 @@ nasnet_config = config['nasnet_config']
 if __name__ == '__main__':
 
     normal_cell_config = {
-        2: [(0, 2)],
-        3: [(2, 4)],
-        4: [(3, 4)],
-        5: [(1, 6), (2, 6)],
-        6: [(0, 5)],
-        7: [(4, 1), (5, 1), (6, 1)]
+        2: [(0, 1),(1,7)],
+        3: [ (1, 1), (2, 7)],
+        4: [(2, 1), (3, 7)],
+        5: [(3, 1),(4 , 7)],
+        6: [(2,5),(4 , 1),(5, 1)],
+        7: [ (6, 1)]
     }
     main()
