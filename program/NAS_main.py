@@ -27,17 +27,20 @@ SAMPLE_SIZE = 3
 # ax.scatter(
 #     xvalues, yvalues, marker='.', facecolor=(0.0, 0.0, 0.0),
 #     edgecolor='r', linewidth=1, s=1)
-dir = "6_10/"
+dir = "11_9/"
 # try:
 population = []
 try:
-    with open("6_6/gen_99",'rb') as f:
+    with open("11_8/gen_5",'rb') as f:
         his=pickle.load(f)
 
+        print( 'successfully load history' )
         for h in his:
             if h.age<h.life:
                 population.append(h)
+        print('population number: '+str(len(population)) )
 except Exception:
+    print('no history found, use predefined struc')
     pass
 
 if not population:
@@ -47,7 +50,8 @@ if not population:
                          3: [(0, 0), (1, 1), (2, 7)],
                          4: [(0, 0), (1, 0), (2, 1), (3, 7)],
                          5: [(0, 0), (1, 0), (2, 0), (3, 1),(4 , 7)],
-                         6: [(0, 0), (1, 0), (2, 0), (3, 0),(4 , 1),(5, 1)]}
+                         6: [(0, 0), (1, 0), (2, 0), (3, 0),(4 , 1),(5, 7)],
+                         7: [(0, 0), (1, 0), (2, 0), (3, 0),(4 , 0),(5, 0), (6, 1)]}
 
     # model.reduction_arch=
     model.accuracy = model.train_NAS()
@@ -58,8 +62,7 @@ if not population:
 history = NewAgingEvolution.NAS_evolution(pop=population, cycles=CYCLES, population_size=POPULATION_SIZE,
                                           sample_size=SAMPLE_SIZE, dir=dir)
 # except Exception, e:
-#     print(e.message)
-
+#     print(e.m
 
 with open(dir + 'history', "wb") as f:
     pickle.dump(history, f)
