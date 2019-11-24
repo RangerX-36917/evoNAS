@@ -14,19 +14,9 @@
    \usepackage{subcaption}
    \usepackage[shortlabels]{enumitem}
 
-
-% \usepackage{algorithm}
-  \ifCLASSINFOpdf
+\begin{document}
   
-  \else
-  
-  \fi
-  
-  \hyphenation{op-tical net-works semi-conduc-tor}
-  
-  \begin{document}
-  
-  \title{Elite Parent Preserving Evolutionary Neural Architecture Search for Image Classification \\ Mid-term Report}
+  \title{Enhanced Evolutionary Neural Architecture Search for Image Classification \\ Project Proposal}
   
   \author{\IEEEauthorblockN{Bowen Zheng, Shijie Chen, Shuxin Wang}
   \IEEEauthorblockA{Department of Computer Science and Engineering\\
@@ -37,16 +27,22 @@
   \maketitle
   
   \begin{abstract}
-  In this project, we propose an elite-parent preserving evolutionary framework for Neural Architecture Search on image classification problems. We have finished the evolutionary algorithm framework and the construction of neural architecture. Currently we focus on a cell-based search space where a neural architecture is composed of multiple interconnected cells. Experiments show the effectiveness of our algorithm in obtaining a neural architecture with good performance. In the future, we will try to add more evolutionary operations and try to enlarge the search space.
+  Last semester, we built an evolutionary neural architecture search algorithm and achieved 76\% accuracy on the CIFAR-10 dataset. In this project, we aim to enhanced the model that we have built. We will first estimate the effectiveness of our elite-parent preserving population control policy. Then we will explore some crossover and mutation strategies based on the properties of graphs and neural networks. In addition, we will try to add a local search module to strengthen the search ability of our algorithm. We expect a noticeable improvement on the performance of our algorithm.
+  
+  % In this project, we propose an elite-parent preserving evolutionary framework for Neural Architecture Search on image classification problems. We have finished the evolutionary algorithm framework and the construction of neural architecture. Currently we focus on a cell-based search space where a neural architecture is composed of multiple interconnected cells. Experiments show the effectiveness of our algorithm in obtaining a neural architecture with good performance. In the future, we will try to add more evolutionary operations and try to enlarge the search space.
   \end{abstract}
   \IEEEpeerreviewmaketitle
   
   \section{Introduction}
-      The great leap of computing resources in the past few decades made it possible to fully utilize the potential of neural networks. In recent years neural networks outperformed traditional methods in many fields of research, especially image classification. However, the state-of-the-art architectures are carefully designed and tuned by researchers for a specific problem. Therefore, people start to think about automating the design of neural networks in the hope of finding the best-performing network architecture efficiently.
+      The great leap of computing resources in the past few decades made it possible to fully utilize the potential of neural networks. In recent years neural networks outperformed traditional methods in many fields of research, especially image classification. However, the state-of-the-art neural network architectures are usually carefully designed and tuned by experienced researchers targeting a specific problem. Therefore, people start to think about automating the design of neural networks in the hope of finding capable network architectures efficiently.
 
-      Neural architecture search is a research field focusing on automating the design of neural networks. Currently there are a few popular approaches, including reinforcement learning, Bayesian optimization, tree-based searching and genetic-based evolutionary algorithms. 
+      Neural Architecture Search(NAS) is a research field focusing on automating the design of neural network architectures. Currently there are a few popular approaches, including reinforcement learning, Bayesian optimization, tree-based searching and genetic-based evolutionary algorithms. We focus on evolutionary algorithms in this project.
 
-      This project focuses on NAS for image classification problems. The reason is that this area is well explored and there exist many high-performance hand-crafted neural architectures. They provide a good guidance and target to our project. In addition, neural networks for image classification are mostly built upon basic units including convolution, polling, normalization, and activation layers. This helps to shrink our search space.
+      This project focuses on NAS based on for image classification problems. The reason is that this area is well explored and there exist many high-performance hand-crafted neural architectures. They provide a good guidance and target to our project. In addition, neural networks for image classification are mostly built upon basic units including convolution, polling, normalization, and activation layers. This helps to shrink our search space to the space of possible combinations and connections of these units.
+
+      We have built an evolutionary NAS(ENAS) system which features a cell based search space and an elite-parent preserving strategy. The ENAS system obtained a neural network with 76\% test accuracy on the CIFAR-10 dataset. In this project, we enhance the ENAS system by (1) Validate the effectiveness of the elite-parent preserving population control policy; (2) Use a more promising initial network architecture; (3) Develop a neural network crossover operator; (4) Enhance local search capability of the system by differentiable architecture search as well as neural network approaches.
+
+      
     
 
 
