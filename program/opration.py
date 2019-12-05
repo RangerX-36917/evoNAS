@@ -76,10 +76,10 @@ def random_NAS_architecture():
 def choose_op():
     op=-1
 
-    if random.random()<0.4:
+    if random.random()<0.3:
         op=1
     else:
-        if random.random()<0.8:
+        if random.random()<0.6:
             op = random.randint(4, 7)
         else:
             op = random.randint(2, 3)
@@ -93,13 +93,13 @@ def NAS_mutate_arch(arch):
         mutate_layer = random.randint(2, hidden_layer_num + 1)
         mutate_position = random.randint(0, mutate_layer - 1)
 
-        if random.random()<0.3:
-            if arch[mutate_layer][mutate_position]==0:
+        if random.random()<0.7:
+            if arch[mutate_layer][mutate_position][1]==0:
                 op_mutated=choose_op()
             else:
                 op_mutated=0
         else:
-            if arch[mutate_layer][mutate_position]==0:
+            if arch[mutate_layer][mutate_position][1]==0:
                 continue
             else:
                 op_mutated=choose_op()
@@ -110,7 +110,7 @@ def NAS_mutate_arch(arch):
                 count += 1
 
         # op_mutated = (arch[mutate_layer][mutate_position][1] + random.randint(1, max_op)) % (max_op + 1)
-        if (count == 1 and arch[mutate_layer][mutate_position][1] > 0 and op_mutated == 0) or (op_mutated==arch[mutate_layer][mutate_position]):
+        if (count == 1 and arch[mutate_layer][mutate_position][1] > 0 and op_mutated == 0) or (op_mutated==arch[mutate_layer][mutate_position][1]):
             # op_mutated = random.randint(1, max_op)
             continue
         else:
@@ -119,8 +119,47 @@ def NAS_mutate_arch(arch):
 
     arch[mutate_layer][mutate_position] = (mutate_position, op_mutated)
     cal_output_layer(arch)
-
+    print(arch)
     return arch
+
+def NAS_crossover(parent_A, parent_B):
+    """
+    交叉算子
+    选取种群中acc最高的两个个体A，B
+    1.直接继承acc较高的个体A的结构，随机将B中不同的部分加入结构
+    2.继承A，B两个个体结构中相同的部分，两个个体结构不同的部分随机继承（需要保证结构合法）
+    """
+    child = []
+    if random.random()>0.5:
+        child = copy.deepcopy(parent_A)
+        for i in range(2, hidden_layer_num + 2):
+            for j in range(0, i):
+                if parent_A[i][j][1] ==0:
+                    if random.random()<0.5:
+                        child[i][j]=parent_B[i][j]
+    else:
+        child={}
+        for i in range(2, hidden_layer_num + 2):
+            count=0
+
+            while count==0:
+                child[i]=[]
+                for j in range(0, i):
+                    if random.random()>0.5:
+                        child[i].append(parent_A[i][j])
+                    else:
+                        child[i].append(parent_B[i][j])
+                for j in range(0, i):
+                    if child[i][j][1]!=0:
+                        count+=1
+    cal_output_layer(child)
+    print('A:'+str(parent_A))
+    print('B:'+str(parent_B))
+    print('C:'+str(child))
+    return child
+
+
+
 
 
 def NAS_mutate_arch_old(arch):

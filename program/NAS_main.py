@@ -6,12 +6,15 @@ import NonAgingEvolution
 import NewAgingEvolution
 import pickle
 import Model
+import random
+import train
 
 # history = AgingEvolution.regularized_evolution(cycles=10000, population_size=10000, sample_size=50)
 sns.set_style('white')
 CYCLES = 500
 POPULATION_SIZE = 10
 SAMPLE_SIZE = 3
+train.initial()
 # history = AgingEvolution.NAS_evolution(cycles=10000, population_size=500, sample_size=50)
 # xvalues = range(len(history))
 # yvalues = [i.accuracy for i in history]
@@ -27,11 +30,12 @@ SAMPLE_SIZE = 3
 # ax.scatter(
 #     xvalues, yvalues, marker='.', facecolor=(0.0, 0.0, 0.0),
 #     edgecolor='r', linewidth=1, s=1)
-dir = "11_9/"
+dir = "data/11_28_A/"
 # try:
 population = []
+his=[]
 try:
-    with open("11_8/gen_5",'rb') as f:
+    with open("data/11_28_A/gen_116",'rb') as f:
         his=pickle.load(f)
 
         print( 'successfully load history' )
@@ -60,7 +64,7 @@ if not population:
     population.append(model)
 
 history = NewAgingEvolution.NAS_evolution(pop=population, cycles=CYCLES, population_size=POPULATION_SIZE,
-                                          sample_size=SAMPLE_SIZE, dir=dir)
+                                          sample_size=SAMPLE_SIZE, dir=dir,history=his)
 # except Exception, e:
 #     print(e.m
 

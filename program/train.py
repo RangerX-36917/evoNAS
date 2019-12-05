@@ -160,12 +160,15 @@ def main():
 
     # evaluate(model, testloader)
 
-
-def eval_cell(normal_cell_config):
+# initial_setting=False
+def initial():
     random.seed(train_config['seed'])
     np.random.seed(train_config['seed'])
     torch.manual_seed(train_config['seed'])
     torch.cuda.manual_seed_all(train_config['seed'])
+    print("initialized setting")
+
+def eval_cell(normal_cell_config):
 
     batch_size = train_config['batch_size']
 
@@ -223,10 +226,10 @@ if __name__ == '__main__':
 
     normal_cell_config = {
         2: [(0, 1),(1,7)],
-        3: [ (1, 1), (2, 7)],
+        3: [(0, 1), (1, 1), (2, 7)],
         4: [(2, 1), (3, 7)],
         5: [(3, 1),(4 , 7)],
-        6: [(2,5),(4 , 1),(5, 1)],
+        6: [(2,5),(4 , 1),(5, 7)],
         7: [ (6, 1)]
     }
     main()

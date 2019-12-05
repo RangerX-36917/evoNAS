@@ -75,12 +75,16 @@ def regularized_evolution(cycles, population_size, sample_size):
     return history
 
 
-def NAS_evolution(pop,cycles, population_size, sample_size,dir):
+def NAS_evolution(pop,cycles, population_size, sample_size,dir,history):
     # population = collections.deque()
+    crossover_rate=0.15
+    extend_lift_rate=0.1
+    print('cross rate: '+str(crossover_rate))
+    print('new age: '+str(extend_lift_rate))
     population = pop
-    history = []
-    for p in pop:
-        history.append(p)
+    history = history
+    # for p in pop:
+        # history.append(p)
 
     #history = copy.deepcopy(pop)  # Not used by the algorithm, only used to report results.
 
@@ -103,12 +107,13 @@ def NAS_evolution(pop,cycles, population_size, sample_size,dir):
         # for i in range(population_size):
     while len(population)<population_size:
         model = Model.NASModel()
-        if len(population)>0:
-            model.normal_arch=opration.NAS_mutate_arch(population[0].normal_arch)
+        # if len(population)>0:
+            # model.normal_arch=opration.NAS_mutate_arch(population[0].normal_arch)
             # model.reduction_arch=opration.NAS_mutate_arch(population[0].reduction_arch)
-        else:
-            model.normal_arch = opration.random_NAS_architecture()
-            model.reduction_arch = opration.random_NAS_architecture()
+        # else:
+        model.normal_arch = opration.random_NAS_architecture()
+            # model.reduction_arch = opration.random_NAS_architecture()
+        # model.accuracy = random.random()
         model.accuracy = model.train_NAS()
         model.age = population_size - len(population)
         model.life = population_size
@@ -135,12 +140,27 @@ def NAS_evolution(pop,cycles, population_size, sample_size,dir):
 
         # Create the child model and store it.
         child = Model.NASModel()
-        if random.random() < 0:
-            child.normal_arch = parent.normal_arch
-            child.reduction_arch = opration.NAS_mutate_arch(parent.reduction_arch)
-        else:
-            child.reduction_arch = parent.reduction_arch
-            child.normal_arch = opration.NAS_mutate_arch(parent.normal_arch)
+
+        legal_crossover=False
+        if random.random()<crossover_rate:
+            sorted_pop=sorted(population,key=lambda x:x.accuracy,reverse=True)
+            parent_A=sorted_pop[0].normal_arch
+            parent_B=sorted_pop[1].normal_arch
+
+            child.normal_arch=opration.NAS_crossover(parent_A,parent_B)
+            if child.normal_arch!=parent_A and child.normal_arch!=parent_B:
+                legal_crossover=True
+                print('successfully crossover')
+
+        if  not legal_crossover:
+            if random.random() < 0:
+                child.normal_arch = parent.normal_arch
+                child.reduction_arch = opration.NAS_mutate_arch(parent.reduction_arch)
+            else:
+                child.reduction_arch = parent.reduction_arch
+                child.normal_arch = opration.NAS_mutate_arch(parent.normal_arch)
+        
+        # child.accuracy = random.random()
         child.accuracy = child.train_NAS()
         child.life = population_size
         population.append(child)
@@ -150,7 +170,7 @@ def NAS_evolution(pop,cycles, population_size, sample_size,dir):
         population.sort(key=lambda i: i.accuracy)
         print("---> best:", population[len(population)-1].normal_arch, "\n---> with acc: ",population[len(population)-1].accuracy)
         if child.accuracy > population[int(0.8 * len(population))].accuracy:
-            parent.life += int(population_size * 0.1)
+            parent.life += int(population_size * extend_lift_rate)
 
         pop_next=[]
         for p in population:
@@ -165,5 +185,7 @@ def NAS_evolution(pop,cycles, population_size, sample_size,dir):
         with open(dir+'gen_'+str(len(history)),"wb") as f:
             pickle.dump(history,f)
 
+        # with open(dir+'gen_'+str(len(history))+'_pop',"wb") as f:
+            # pickle.dump(population,f)
 
     return history
