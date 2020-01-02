@@ -1,0 +1,8 @@
+__pycache__/
+.vscode/
+/dataset/
+test*.py
+*.log
+/log/
+main_amp.py
+train_ddp2.sh

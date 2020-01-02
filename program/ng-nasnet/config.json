@@ -1,0 +1,26 @@
+{
+    "train_config":{
+        "seed":42,
+        "fp16":true,
+        "data_path":"./dataset",
+        "lr":5e-2,
+        "start_lr_schedule_epoch":50,
+        "train_batch_size":250,
+        "val_batch_size":1250,
+        "epoch":500,
+        "dropfc_rate":0.5,
+        "start_droppath_rate":0.05,
+        "end_droppath_rate":0.2,
+        "start_dropblock_rate":0,
+        "end_dropblock_rate":0.25,
+        "dropout_schedule_steps":100,
+        "start_dropout_schedule_epoch":0
+    },
+    
+    
+    "nasnet_config":{
+        "num_stem_channels":28,
+        "cell_base_channels":32,
+        "num_stack_cells":4
+    }
+}
