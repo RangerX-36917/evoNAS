@@ -1,4 +1,5 @@
 import time
+import pickle
 
 import torch
 import torch.nn as nn
@@ -276,15 +277,22 @@ if __name__ == '__main__':
     #     7: [(3, 1), (5, 1), (6, 1)]
     # }
 
+
+    try:
+        with open("./struc.pkl",'rb') as f:
+            normal_cell_config=pickle.load(f)
+            print('load struc')
+    except Exception:
+        print('no struc found')
     # # nasnet-A
-    normal_cell_config = {
-        2: [(1, 7), (1, 7)],
-        3: [(0, 7), (1, 6)],
-        4: [(0, 1), (1, 2)],
-        5: [(0, 2), (1, 2)],
-        6: [(0, 7), (1, 7)],
-        7: [(2, 1), (3, 1), (4, 1), (5, 1), (6, 1)]
-    }
+        normal_cell_config = {
+            2: [(1, 7), (1, 7)],
+            3: [(0, 7), (1, 6)],
+            4: [(0, 1), (1, 2)],
+            5: [(0, 2), (1, 2)],
+            6: [(0, 7), (1, 7)],
+            7: [(2, 1), (3, 1), (4, 1), (5, 1), (6, 1)]
+        }
 
     # resnet 3 conv
     # normal_cell_config={
