@@ -7,14 +7,15 @@ import NewAgingEvolution
 import pickle
 import Model
 import random
-import train
+
+# import train
 
 # history = AgingEvolution.regularized_evolution(cycles=10000, population_size=10000, sample_size=50)
 sns.set_style('white')
 CYCLES = 500
 POPULATION_SIZE = 10
 SAMPLE_SIZE = 3
-train.initial()
+# train.initial()
 # history = AgingEvolution.NAS_evolution(cycles=10000, population_size=500, sample_size=50)
 # xvalues = range(len(history))
 # yvalues = [i.accuracy for i in history]
@@ -33,16 +34,16 @@ train.initial()
 dir = "data/11_28_A/"
 # try:
 population = []
-his=[]
+his = []
 try:
-    with open("data/11_28_A/gen_116",'rb') as f:
-        his=pickle.load(f)
+    with open("no exit", 'rb') as f:
+        his = pickle.load(f)
 
-        print( 'successfully load history' )
+        print('successfully load history')
         for h in his:
-            if h.age<h.life:
+            if h.age < h.life:
                 population.append(h)
-        print('population number: '+str(len(population)) )
+        print('population number: ' + str(len(population)))
 except Exception:
     print('no history found, use predefined struc')
     pass
@@ -50,12 +51,12 @@ except Exception:
 if not population:
     model = Model.NASModel()
     # set the init architecture below
-    model.normal_arch = {2: [(0, 1), (1, 7)],
-                         3: [(0, 0), (1, 1), (2, 7)],
-                         4: [(0, 0), (1, 0), (2, 1), (3, 7)],
-                         5: [(0, 0), (1, 0), (2, 0), (3, 1),(4 , 7)],
-                         6: [(0, 0), (1, 0), (2, 0), (3, 0),(4 , 1),(5, 7)],
-                         7: [(0, 0), (1, 0), (2, 0), (3, 0),(4 , 0),(5, 0), (6, 1)]}
+    model.normal_arch = {2: [(0, 0), (0, 0), (1, 7), (1, 7)],
+                         3: [(0, 0), (0, 3), (1, 1), (1, 0), (2, 1)],
+                         4: [(0, 1), (0, 0), (1, 1), (1, 0), (2, 6), (3, 0)],
+                         5: [(0, 7), (0, 0), (1, 1), (1, 0), (2, 0), (3, 0), (4, 7)],
+                         6: [(0, 1), (0, 0), (1, 7), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0)],
+                         7: [(0, 0), (1, 0), (2, 0), (3, 1), (4, 0), (5, 1), (6, 1)]}
 
     # model.reduction_arch=
     model.accuracy = model.train_NAS()
@@ -64,7 +65,7 @@ if not population:
     population.append(model)
 
 history = NewAgingEvolution.NAS_evolution(pop=population, cycles=CYCLES, population_size=POPULATION_SIZE,
-                                          sample_size=SAMPLE_SIZE, dir=dir,history=his)
+                                          sample_size=SAMPLE_SIZE, dir=dir, history=his)
 # except Exception, e:
 #     print(e.m
 

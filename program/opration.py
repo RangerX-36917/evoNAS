@@ -39,14 +39,18 @@ def mutate_arch(parent_arch):
 
 
 def cal_output_layer(arch):
-    arch[hidden_layer_num + 2] = []
-    for i in range(2, hidden_layer_num + 2):
-        arch[hidden_layer_num + 2].append((i, 1))
-    for i in range(2, hidden_layer_num + 2):
+    output_layer = []
 
-        for j in range(2, i):
-            if arch[i][j][1] != 0:
-                arch[hidden_layer_num + 2][j - 2] = (j, 0)
+    for i in range(0, hidden_layer_num + 2):
+        output_layer.append((i, 1))
+    for i in range(2, hidden_layer_num + 2):
+        current_layer = arch[i]
+        for c in current_layer:
+            if c[1] != 0:
+                output_layer[c[0]] = (c[0], 0)
+
+    arch[hidden_layer_num + 2] = output_layer
+
 
 
 def random_NAS_architecture():
@@ -59,15 +63,17 @@ def random_NAS_architecture():
         count = 0
         arch[i] = []
         for j in range(i):
-            if random.random() < 0.2:
-                rand_op = random.randint(1, max_op)
-            else:
-                rand_op = 0
-            count += rand_op
-            arch[i].append((j, rand_op))
+            time=[1,2][j<2]
+            for _ in range(time):
+                if random.random() < 0.35:
+                    rand_op = random.randint(1, max_op)
+                else:
+                    rand_op = 0
+                count += rand_op
+                arch[i].append((j, rand_op))
         if count == 0:
-            sample = random.randint(0, i - 1)
-            arch[i][sample] = (sample, random.randint(1, max_op))
+            sample = random.randint(0, i + 1)
+            arch[i][sample] = (arch[i][sample][0], random.randint(1, max_op))
 
     cal_output_layer(arch)
 
@@ -91,15 +97,17 @@ def NAS_mutate_arch(arch):
 
     while True:
         mutate_layer = random.randint(2, hidden_layer_num + 1)
-        mutate_position = random.randint(0, mutate_layer - 1)
+        mutate_position = random.randint(0, mutate_layer + 1)
+
+        mutate_cell=arch[mutate_layer][mutate_position]
 
         if random.random()<0.7:
-            if arch[mutate_layer][mutate_position][1]==0:
+            if mutate_cell[1]==0:
                 op_mutated=choose_op()
             else:
                 op_mutated=0
         else:
-            if arch[mutate_layer][mutate_position][1]==0:
+            if mutate_cell[1]==0:
                 continue
             else:
                 op_mutated=choose_op()
@@ -110,14 +118,14 @@ def NAS_mutate_arch(arch):
                 count += 1
 
         # op_mutated = (arch[mutate_layer][mutate_position][1] + random.randint(1, max_op)) % (max_op + 1)
-        if (count == 1 and arch[mutate_layer][mutate_position][1] > 0 and op_mutated == 0) or (op_mutated==arch[mutate_layer][mutate_position][1]):
+        if (count == 1 and mutate_cell[1] > 0 and op_mutated == 0) or (op_mutated==mutate_cell[1]):
             # op_mutated = random.randint(1, max_op)
             continue
         else:
             break
 
 
-    arch[mutate_layer][mutate_position] = (mutate_position, op_mutated)
+    arch[mutate_layer][mutate_position] = (mutate_cell[0], op_mutated)
     cal_output_layer(arch)
     print(arch)
     return arch
@@ -133,8 +141,9 @@ def NAS_crossover(parent_A, parent_B):
     if random.random()>0.5:
         child = copy.deepcopy(parent_A)
         for i in range(2, hidden_layer_num + 2):
-            for j in range(0, i):
-                if parent_A[i][j][1] ==0:
+            current_layer=parent_A[i]
+            for j in range(len(current_layer)):
+                if current_layer[j][1] ==0:
                     if random.random()<0.5:
                         child[i][j]=parent_B[i][j]
     else:
@@ -144,12 +153,13 @@ def NAS_crossover(parent_A, parent_B):
 
             while count==0:
                 child[i]=[]
-                for j in range(0, i):
+                current_layer = parent_A[i]
+                for j in range(len(current_layer)):
                     if random.random()>0.5:
                         child[i].append(parent_A[i][j])
                     else:
                         child[i].append(parent_B[i][j])
-                for j in range(0, i):
+                for j in range(len(current_layer)):
                     if child[i][j][1]!=0:
                         count+=1
     cal_output_layer(child)

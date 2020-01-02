@@ -7,7 +7,7 @@
         "start_lr_schedule_epoch":50,
         "train_batch_size":250,
         "val_batch_size":1250,
-        "epoch":500,
+        "epoch":50,
         "dropfc_rate":0.5,
         "start_droppath_rate":0.05,
         "end_droppath_rate":0.2,

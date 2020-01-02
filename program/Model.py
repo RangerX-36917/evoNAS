@@ -1,8 +1,10 @@
 import copy
 import random
+import pickle
+import os
 # import cnn.train_cnn as train_cnn
 # import cnn.CNN as CNN
-import train
+# import train
 
 DIM = 1000  # Number of bits in the bit strings (i.e. the "models").
 NOISE_STDEV = 0.01  # Standard deviation of the simulated training noise.
@@ -112,5 +114,16 @@ class NASModel(object):
         # model = CNN.CNN(cell_config_list, class_num=len(classes),N=1)
         # train_cnn.train(model, trainloader, testloader)
         # return train_cnn.evaluate(model, testloader)
+        with open('./ng-nasnet/struc.pkl', 'wb') as f:
+            pickle.dump(arch, f)
 
-        return train.eval_cell(arch)
+        p = os.popen('cd ./ng-nasnet ;sh ./train_ddp.sh ;cd ../')
+        acc=0
+        for t in p.readlines():
+            print(t)
+            if t.split(":")[0]=="val acc":
+                acc=float(t.split(":")[1].strip())
+                print('record acc')
+        return acc
+        # return random.random()
+        # return train.eval_cell(arch)
